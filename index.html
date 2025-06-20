@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrabahoPH: Local Jobs for Every Juan</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="logo">🇵🇭 TrabahoPH</h1>
+                <p class="tagline">Local Jobs for Every Juan</p>
+                <div class="nav-buttons">
+                    <a href="auth.html" class="btn btn-secondary">Login</a>
+                    <a href="auth.html" class="btn btn-primary">Sign Up</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Landing Section -->
+        <section id="landing" class="hero">
+            <div class="hero-content">
+                <h2>Find Work in Your Barangay</h2>
+                <p>Connecting rural job seekers with local employers across the Philippines</p>
+                <div class="search-bar">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="locationSearch" placeholder="Enter your barangay, municipality, or province">
+                    </div>
+                    <button class="btn btn-primary" onclick="searchJobs()">Search Jobs</button>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="number">500+</span>
+                        <span class="label">Local Jobs</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">150+</span>
+                        <span class="label">Rural Areas</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">1000+</span>
+                        <span class="label">Job Seekers</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Job Listings Section -->
+        <section id="jobs" class="jobs-section" style="display: none;">
+            <div class="container">
+                <h2>Available Jobs</h2>
+                <div class="filters">
+                    <select id="provinceFilter">
+                        <option value="">All Provinces</option>
+                        <option value="Ilocos Norte">Ilocos Norte</option>
+                        <option value="Cagayan">Cagayan</option>
+                        <option value="Pangasinan">Pangasinan</option>
+                        <option value="Bohol">Bohol</option>
+                        <option value="Leyte">Leyte</option>
+                        <option value="Davao del Sur">Davao del Sur</option>
+                    </select>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Tourism">Tourism</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Government">Government</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="applyFilters()">Filter</button>
+                </div>
+                <div id="jobListings" class="job-listings">
+                    <!-- Jobs will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2>Why Choose TrabahoPH?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3>Local Focus</h3>
+                        <p>Find jobs specifically in your barangay, municipality, or province</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>SMS Alerts</h3>
+                        <p>Get job notifications via text message even with limited internet</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎓</div>
+                        <h3>Skill Development</h3>
+                        <p>Access free resources for resume writing and interview preparation</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <h3>Community Partnership</h3>
+                        <p>Barangay officials can post community work programs</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Development Section -->
+        <section id="skills" class="skills-section">
+            <div class="container">
+                <h2>Free Career Resources</h2>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <h3>Resume Writing Guide</h3>
+                        <p>Learn how to create an effective resume that stands out</p>
+                        <button class="btn btn-outline" onclick="downloadResumeGuide()">Download Guide</button>
+                    </div>
+                    <div class="resource-card">
+                        <h3>Interview Tips</h3>
+                        <p>Prepare for job interviews with confidence</p>
+                        <button class="btn btn-outline" onclick="openInterviewTips()">Watch Videos</button>
+                    </div>
+                    <div class="resource-card">
+                        <h3>TESDA Courses</h3>
+                        <p>Find technical skills training programs in your area</p>
+                        <button class="btn btn-outline" onclick="openTESDAcourses()">Find Courses</button>
+                    </div>
+                    <div class="resource-card">
+                        <h3>Digital Literacy</h3>
+                        <p>Basic computer and internet skills for modern jobs</p>
+                        <button class="btn btn-outline" onclick="openDigitalLiteracy()">Start Learning</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TrabahoPH</h4>
+                    <p>Connecting rural communities with local job opportunities across the Philippines.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>For Job Seekers</h4>
+                    <ul>
+                        <li><a href="#jobs">Browse Jobs</a></li>
+                        <li><a href="#skills">Career Resources</a></li>
+                        <li><a href="#">Resume Builder</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <ul>
+                        <li><a href="#">Post a Job</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Employer Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@trabahooph.com</p>
+                    <p>SMS Hotline: 0917-TRABAHO</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TrabahoPH. Empowering rural communities.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

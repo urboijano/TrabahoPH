@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up - TrabahoPH</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="logo">🇵🇭 TrabahoPH</h1>
+                <p class="tagline">Local Jobs for Every Juan</p>
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn btn-secondary">Back to Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding: 2rem 0;">
+        <div class="container">
+            <!-- Authentication Forms Container -->
+            <div id="authContainer" class="auth-container">
+                <!-- Job Seeker Registration -->
+                <div id="jobSeekerForm" class="auth-form">
+                    <h3>Job Seeker Registration</h3>
+                    <form onsubmit="registerJobSeeker(event)" id="jobSeekerRegForm">
+                        <input type="text" name="fullName" placeholder="Full Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password (minimum 6 characters)" minlength="6" required>
+                        <input type="password" name="confirmPassword" placeholder="Confirm Password" minlength="6" required>
+                        <input type="tel" name="mobile" placeholder="Mobile Number (e.g. 09171234567)" pattern="[0-9]{11}" required>
+                        <div class="searchable-select">
+                            <input type="text" id="provinceSearch" name="province" placeholder="Search and select your province" required autocomplete="off">
+                            <div class="dropdown-options" id="provinceOptions" style="display: none;">
+                                <div class="option" data-value="Abra">Abra</div>
+                                <div class="option" data-value="Albay">Albay</div>
+                                <div class="option" data-value="Apayao">Apayao</div>
+                                <div class="option" data-value="Aurora">Aurora</div>
+                                <div class="option" data-value="Bataan">Bataan</div>
+                                <div class="option" data-value="Batanes">Batanes</div>
+                                <div class="option" data-value="Batangas">Batangas</div>
+                                <div class="option" data-value="Benguet">Benguet</div>
+                                <div class="option" data-value="Bulacan">Bulacan</div>
+                                <div class="option" data-value="Cagayan">Cagayan</div>
+                                <div class="option" data-value="Camarines Norte">Camarines Norte</div>
+                                <div class="option" data-value="Camarines Sur">Camarines Sur</div>
+                                <div class="option" data-value="Catanduanes">Catanduanes</div>
+                                <div class="option" data-value="Cavite">Cavite</div>
+                                <div class="option" data-value="Ilocos Norte">Ilocos Norte</div>
+                                <div class="option" data-value="Ilocos Sur">Ilocos Sur</div>
+                                <div class="option" data-value="Isabela">Isabela</div>
+                                <div class="option" data-value="Kalinga">Kalinga</div>
+                                <div class="option" data-value="La Union">La Union</div>
+                                <div class="option" data-value="Laguna">Laguna</div>
+                                <div class="option" data-value="Marinduque">Marinduque</div>
+                                <div class="option" data-value="Masbate">Masbate</div>
+                                <div class="option" data-value="Metro Manila">Metro Manila</div>
+                                <div class="option" data-value="Mountain Province">Mountain Province</div>
+                                <div class="option" data-value="Nueva Ecija">Nueva Ecija</div>
+                                <div class="option" data-value="Nueva Vizcaya">Nueva Vizcaya</div>
+                                <div class="option" data-value="Occidental Mindoro">Occidental Mindoro</div>
+                                <div class="option" data-value="Oriental Mindoro">Oriental Mindoro</div>
+                                <div class="option" data-value="Palawan">Palawan</div>
+                                <div class="option" data-value="Pampanga">Pampanga</div>
+                                <div class="option" data-value="Pangasinan">Pangasinan</div>
+                                <div class="option" data-value="Quezon">Quezon</div>
+                                <div class="option" data-value="Quirino">Quirino</div>
+                                <div class="option" data-value="Rizal">Rizal</div>
+                                <div class="option" data-value="Romblon">Romblon</div>
+                                <div class="option" data-value="Sorsogon">Sorsogon</div>
+                                <div class="option" data-value="Tarlac">Tarlac</div>
+                                <div class="option" data-value="Zambales">Zambales</div>
+                                <div class="option" data-value="Aklan">Aklan</div>
+                                <div class="option" data-value="Antique">Antique</div>
+                                <div class="option" data-value="Bohol">Bohol</div>
+                                <div class="option" data-value="Capiz">Capiz</div>
+                                <div class="option" data-value="Cebu">Cebu</div>
+                                <div class="option" data-value="Eastern Samar">Eastern Samar</div>
+                                <div class="option" data-value="Guimaras">Guimaras</div>
+                                <div class="option" data-value="Iloilo">Iloilo</div>
+                                <div class="option" data-value="Leyte">Leyte</div>
+                                <div class="option" data-value="Negros Occidental">Negros Occidental</div>
+                                <div class="option" data-value="Negros Oriental">Negros Oriental</div>
+                                <div class="option" data-value="Northern Samar">Northern Samar</div>
+                                <div class="option" data-value="Samar">Samar</div>
+                                <div class="option" data-value="Siquijor">Siquijor</div>
+                                <div class="option" data-value="Southern Leyte">Southern Leyte</div>
+                                <div class="option" data-value="Agusan del Norte">Agusan del Norte</div>
+                                <div class="option" data-value="Agusan del Sur">Agusan del Sur</div>
+                                <div class="option" data-value="Basilan">Basilan</div>
+                                <div class="option" data-value="Bukidnon">Bukidnon</div>
+                                <div class="option" data-value="Camiguin">Camiguin</div>
+                                <div class="option" data-value="Compostela Valley">Compostela Valley</div>
+                                <div class="option" data-value="Cotabato">Cotabato</div>
+                                <div class="option" data-value="Davao del Norte">Davao del Norte</div>
+                                <div class="option" data-value="Davao del Sur">Davao del Sur</div>
+                                <div class="option" data-value="Davao Occidental">Davao Occidental</div>
+                                <div class="option" data-value="Davao Oriental">Davao Oriental</div>
+                                <div class="option" data-value="Dinagat Islands">Dinagat Islands</div>
+                                <div class="option" data-value="Lanao del Norte">Lanao del Norte</div>
+                                <div class="option" data-value="Lanao del Sur">Lanao del Sur</div>
+                                <div class="option" data-value="Maguindanao">Maguindanao</div>
+                                <div class="option" data-value="Misamis Occidental">Misamis Occidental</div>
+                                <div class="option" data-value="Misamis Oriental">Misamis Oriental</div>
+                                <div class="option" data-value="Sarangani">Sarangani</div>
+                                <div class="option" data-value="South Cotabato">South Cotabato</div>
+                                <div class="option" data-value="Sultan Kudarat">Sultan Kudarat</div>
+                                <div class="option" data-value="Sulu">Sulu</div>
+                                <div class="option" data-value="Surigao del Norte">Surigao del Norte</div>
+                                <div class="option" data-value="Surigao del Sur">Surigao del Sur</div>
+                                <div class="option" data-value="Tawi-Tawi">Tawi-Tawi</div>
+                                <div class="option" data-value="Zamboanga del Norte">Zamboanga del Norte</div>
+                                <div class="option" data-value="Zamboanga del Sur">Zamboanga del Sur</div>
+                                <div class="option" data-value="Zamboanga Sibugay">Zamboanga Sibugay</div>
+                            </div>
+                        </div>
+                        <div class="searchable-select">
+                            <input type="text" id="municipalitySearch" name="municipality" placeholder="Search and select your municipality" required autocomplete="off" disabled>
+                            <div class="dropdown-options" id="municipalityOptions" style="display: none;">
+                                <!-- Municipality options will be populated based on province selection -->
+                            </div>
+                        </div>
+                        <div class="searchable-select">
+                            <input type="text" id="barangaySearch" name="barangay" placeholder="Search and select your barangay" required autocomplete="off" disabled>
+                            <div class="dropdown-options" id="barangayOptions" style="display: none;">
+                                <!-- Barangay options will be populated based on municipality selection -->
+                            </div>
+                        </div>
+                        <textarea name="skills" placeholder="Skills and Experience (optional)"></textarea>
+                        <label for="resume">Upload Resume (PDF - optional):</label>
+                        <input type="file" id="resume" name="resume" accept=".pdf">
+                        <label>
+                            <input type="checkbox" name="smsAlerts" checked>
+                            I want to receive SMS job alerts
+                        </label>
+                        <label>
+                            <input type="checkbox" name="terms" required>
+                            I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+                    </p>
+                </div>
+
+                <!-- Employer Registration -->
+                <div id="employerForm" class="auth-form" style="display: none;">
+                    <h3>Employer Registration</h3>
+                    <form onsubmit="registerEmployer(event)" id="employerRegForm">
+                        <input type="text" name="businessName" placeholder="Business/Organization Name" required>
+                        <input type="text" name="contactPerson" placeholder="Contact Person Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password (minimum 6 characters)" minlength="6" required>
+                        <input type="password" name="confirmPassword" placeholder="Confirm Password" minlength="6" required>
+                        <input type="tel" name="contactNumber" placeholder="Contact Number (e.g. 09171234567)" pattern="[0-9]{11}" required>
+                        <select name="businessType" required>
+                            <option value="">Business Type</option>
+                            <option value="Agriculture">Agriculture/Farm</option>
+                            <option value="Tourism">Tourism Business</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Government">Government Office</option>
+                            <option value="Cooperative">Cooperative</option>
+                            <option value="Retail">Retail Business</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" name="province" placeholder="Province" required>
+                        <input type="text" name="municipality" placeholder="Municipality" required>
+                        <input type="text" name="barangay" placeholder="Barangay" required>
+                        <textarea name="businessDescription" placeholder="Business Description (optional)"></textarea>
+                        <label>
+                            <input type="checkbox" name="terms" required>
+                            I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+                    </p>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="auth-form" style="display: none;">
+                    <h3>Login to TrabahoPH</h3>
+                    <form onsubmit="login(event)" id="loginFormElement">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <label>
+                            <input type="checkbox" name="rememberMe">
+                            Remember me
+                        </label>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p style="text-align: center; margin: 1rem 0;">
+                        <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+                    </p>
+                    <div style="text-align: center;">
+                        <p>Don't have an account?</p>
+                        <button class="btn btn-secondary" onclick="showJobSeekerForm()">Register as Job Seeker</button>
+                        <button class="btn btn-secondary" onclick="showEmployerForm()">Register as Employer</button>
+                    </div>
+                </div>
+
+                <!-- Forgot Password Form -->
+                <div id="forgotPasswordForm" class="auth-form" style="display: none;">
+                    <h3>Reset Password</h3>
+                    <p>Enter your email address and we'll send you instructions to reset your password.</p>
+                    <form onsubmit="resetPassword(event)" id="forgotPasswordFormElement">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <button type="submit" class="btn btn-primary">Send Reset Instructions</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        <a href="#" onclick="showLogin()">Back to Login</a>
+                    </p>
+                </div>
+
+                <!-- Form Navigation -->
+                <div id="formNavigation" class="form-navigation">
+                    <button class="btn btn-outline" onclick="showJobSeekerForm()">Job Seeker</button>
+                    <button class="btn btn-outline" onclick="showEmployerForm()">Employer</button>
+                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TrabahoPH</h4>
+                    <p>Connecting rural communities with local job opportunities across the Philippines.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>For Job Seekers</h4>
+                    <ul>
+                        <li><a href="index.html#jobs">Browse Jobs</a></li>
+                        <li><a href="index.html#skills">Career Resources</a></li>
+                        <li><a href="#">Resume Builder</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>For Employers</h4>
+                    <ul>
+                        <li><a href="#">Post a Job</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Employer Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@trabahooph.com</p>
+                    <p>SMS Hotline: 0917-TRABAHO</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TrabahoPH. Empowering rural communities.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
