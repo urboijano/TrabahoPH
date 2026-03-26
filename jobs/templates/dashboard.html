@@ -1,0 +1,653 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    * {
+        font-family: 'Poppins', sans-serif !important;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    i, .bi {
+        font-family: 'bootstrap-icons' !important;
+    }
+
+    :root {
+        --green-50: #f0fdf4;
+        --green-100: #dcfce7;
+        --green-200: #bbf7d0;
+        --green-300: #86efac;
+        --green-400: #4ade80;
+        --green-500: #22c55e;
+        --green-600: #16a34a;
+        --green-700: #15803d;
+        --green-800: #166534;
+        --green-900: #14532d;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-container {
+        padding: 2rem 0;
+    }
+
+    .dashboard-header {
+        margin-bottom: 3rem;
+        animation: slideDown 0.4s ease-out;
+        background: var(--green-600);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .dashboard-header p {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .dashboard-header h1 i {
+        color: var(--green-400);
+        font-size: 2.2rem;
+        line-height: 1;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--green-500);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+        border-color: var(--green-200);
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: linear-gradient(135deg, var(--green-400) 0%, var(--green-500) 100%);
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
+    }
+
+    .stat-card:nth-child(4) .stat-icon {
+        background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-content h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--gray-900);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-content p {
+        font-size: 0.95rem;
+        color: var(--gray-600);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-content small {
+        font-size: 0.85rem;
+        color: var(--gray-500);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-content small::before {
+        content: '✓';
+        color: var(--green-500);
+        font-weight: bold;
+    }
+
+    /* Dashboard Rows */
+    .dashboard-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-row > .dashboard-section {
+        margin-bottom: 0;
+    }
+
+    .dashboard-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-section:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--green-200);
+    }
+
+    .dashboard-section.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-section h2 {
+        color: var(--gray-900);
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .dashboard-section h2 i {
+        color: var(--green-600);
+        font-size: 1.3rem;
+    }
+
+    .dashboard-section h2::before {
+        content: '';
+        width: 4px;
+        height: 1.4rem;
+        background: linear-gradient(to bottom, var(--green-500), var(--green-600));
+        border-radius: 2px;
+    }
+
+    /* Week Stats */
+    .week-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .week-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--green-50) 0%, var(--green-100) 100%);
+        border-radius: 12px;
+        border: 1px solid var(--green-200);
+        transition: all 0.3s ease;
+    }
+
+    .week-stat:hover {
+        border-color: var(--green-400);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+    }
+
+    .week-label {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .week-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Category List */
+    .category-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .category-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        background: linear-gradient(to right, var(--green-50), var(--gray-50));
+        border-radius: 10px;
+        border-left: 3px solid var(--green-500);
+        transition: all 0.3s ease;
+    }
+
+    .category-item:hover {
+        background: linear-gradient(to right, var(--green-100), var(--gray-100));
+        transform: translateX(4px);
+    }
+
+    .category-item span:first-child {
+        color: var(--gray-800);
+        font-weight: 600;
+    }
+
+    .badge {
+        background: linear-gradient(135deg, var(--green-500), var(--green-600));
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Province Grid */
+    .province-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        min-height: 200px;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .province-grid > p {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .province-card {
+        background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+    }
+
+    .province-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-xl);
+        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
+    }
+
+    .province-card h4 {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .province-count {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    /* Recent List */
+    .recent-list {
+        display: grid;
+        gap: 1rem;
+        min-height: 150px;
+        align-items: start;
+    }
+
+    .recent-list > p {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin: auto;
+    }
+
+    .recent-item {
+        background: linear-gradient(to right, var(--green-50), var(--gray-50));
+        padding: 1.25rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--green-500);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .recent-item::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 100%;
+        background: rgba(34, 197, 94, 0.05);
+        border-radius: 0 10px 10px 0;
+        transition: width 0.3s ease;
+    }
+
+    .recent-item:hover {
+        background: linear-gradient(to right, var(--green-100), var(--gray-100));
+        box-shadow: var(--shadow-md);
+    }
+
+    .recent-item:hover::after {
+        width: 100%;
+    }
+
+    .recent-title {
+        color: var(--gray-900);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .recent-company {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .recent-location {
+        color: var(--gray-500);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .recent-date {
+        color: var(--gray-400);
+        font-size: 0.85rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .recent-status {
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-accepted {
+        background: var(--green-100);
+        color: var(--green-800);
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .week-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .dashboard-section {
+            padding: 1.5rem;
+        }
+
+        .province-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1><i class="bi bi-graph-up"></i> Dashboard</h1>
+        <p>Welcome back, <strong>{{ user.username }}</strong>! Here's your TrabahoPH overview.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_jobs }}</h3>
+                <p>Total Jobs</p>
+                <small>{{ active_jobs }} active</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-file-earmark"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_applications }}</h3>
+                <p>Applications</p>
+                <small>{{ pending_applications }} pending</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_job_seekers }}</h3>
+                <p>Job Seekers</p>
+                <small>Active users</small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_employers }}</h3>
+                <p>Employers</p>
+                <small>Registered companies</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-row">
+        <div class="dashboard-section">
+            <h2><i class="bi bi-graph-up"></i> This Week</h2>
+            <div class="week-stats">
+                <div class="week-stat">
+                    <span class="week-label">New Jobs</span>
+                    <span class="week-value">{{ jobs_this_week }}</span>
+                </div>
+                <div class="week-stat">
+                    <span class="week-label">Applications</span>
+                    <span class="week-value">{{ applications_this_week }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h2><i class="bi bi-card-checklist"></i> Top Categories</h2>
+            <div class="category-list">
+                {% for cat in category_stats %}
+                    <div class="category-item">
+                        <span>{{ cat.category }}</span>
+                        <span class="badge">{{ cat.count }}</span>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--gray-500); text-align: center; padding: 2rem;">No categories yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-section full-width">
+        <h2><i class="bi bi-geo-alt-fill"></i> Top Provinces</h2>
+        <div class="province-grid">
+            {% for prov in province_stats %}
+                <div class="province-card">
+                    <h4>{{ prov.province }}</h4>
+                    <p class="province-count">{{ prov.count }}</p>
+                </div>
+            {% empty %}
+                <p style="color: var(--gray-500); text-align: center; padding: 2rem;">No jobs posted yet</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dashboard-row">
+        <div class="dashboard-section">
+            <h2><i class="bi bi-briefcase"></i> Recent Jobs</h2>
+            <div class="recent-list">
+                {% for job in recent_jobs %}
+                    <div class="recent-item">
+                        <div class="recent-title">{{ job.title }}</div>
+                        <div class="recent-company">{{ job.employer.business_name }}</div>
+                        <div class="recent-location">
+                            <i class="bi bi-geo-alt"></i> {{ job.province }}
+                        </div>
+                        <div class="recent-date">
+                            Posted {{ job.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--gray-500); text-align: center; padding: 2rem;">No jobs posted yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h2><i class="bi bi-file-earmark-text"></i> Recent Applications</h2>
+            <div class="recent-list">
+                {% for app in recent_applications %}
+                    <div class="recent-item">
+                        <div class="recent-title">{{ app.job.title }}</div>
+                        <div class="recent-company">{{ app.job_seeker.user.first_name }} {{ app.job_seeker.user.last_name }}</div>
+                        <div class="recent-status">
+                            <span class="status-badge status-{{ app.status }}">{{ app.status|upper }}</span>
+                        </div>
+                        <div class="recent-date">
+                            Applied {{ app.applied_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--gray-500); text-align: center; padding: 2rem;">No applications yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Jobs - TrabahoPH{% endblock %}
+
+{% block content %}
+<section class="jobs-section" style="padding: 3rem 0; min-height: calc(100vh - 300px);">
+    <div class="container">
+        <h1 style="color: var(--primary-dark); margin-bottom: 2rem; font-size: 2.5rem;">💼 Browse Available Jobs</h1>
+        
+        <!-- Filters -->
+        <div style="background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+            <h3 style="color: var(--primary-dark); margin-bottom: 1.5rem;">Filter Jobs</h3>
+            <form method="GET" id="filterForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <label for="searchInput" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Search</label>
+                    <input type="text" id="searchInput" name="q" placeholder="Search job title, location..." value="{{ request.GET.q }}" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px;">
+                </div>
+                <div>
+                    <label for="categorySelect" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Category</label>
+                    <select id="categorySelect" name="category" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px; cursor: pointer;">
+                        <option value="">All Categories</option>
+                        <option value="IT" {% if request.GET.category == 'IT' %}selected{% endif %}>IT & Technology</option>
+                        <option value="Healthcare" {% if request.GET.category == 'Healthcare' %}selected{% endif %}>Healthcare</option>
+                        <option value="Service" {% if request.GET.category == 'Service' %}selected{% endif %}>Service</option>
+                        <option value="Agriculture" {% if request.GET.category == 'Agriculture' %}selected{% endif %}>Agriculture</option>
+                        <option value="Education" {% if request.GET.category == 'Education' %}selected{% endif %}>Education</option>
+                        <option value="Construction" {% if request.GET.category == 'Construction' %}selected{% endif %}>Construction</option>
+                        <option value="Retail" {% if request.GET.category == 'Retail' %}selected{% endif %}>Retail & Sales</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="provinceSelect" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Province</label>
+                    <select id="provinceSelect" name="province" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px; cursor: pointer;">
+                        <option value="">All Provinces</option>
+                        <option value="Quezon" {% if request.GET.province == 'Quezon' %}selected{% endif %}>Quezon</option>
+                        <option value="Laguna" {% if request.GET.province == 'Laguna' %}selected{% endif %}>Laguna</option>
+                        <option value="Batangas" {% if request.GET.province == 'Batangas' %}selected{% endif %}>Batangas</option>
+                        <option value="Cavite" {% if request.GET.province == 'Cavite' %}selected{% endif %}>Cavite</option>
+                        <option value="Rizal" {% if request.GET.province == 'Rizal' %}selected{% endif %}>Rizal</option>
+                        <option value="Bulacan" {% if request.GET.province == 'Bulacan' %}selected{% endif %}>Bulacan</option>
+                        <option value="Nueva Ecija" {% if request.GET.province == 'Nueva Ecija' %}selected{% endif %}>Nueva Ecija</option>
+                        <option value="Pampanga" {% if request.GET.province == 'Pampanga' %}selected{% endif %}>Pampanga</option>
+                        <option value="Tarlac" {% if request.GET.province == 'Tarlac' %}selected{% endif %}>Tarlac</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: flex-end; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; white-space: nowrap;">Filter Results</button>
+                    <a href="{% url 'job_list' %}" class="btn btn-outline" style="flex: 1; text-align: center; white-space: nowrap; text-decoration: none;">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Job Listings -->
+        {% if jobs %}
+        <div style="margin-bottom: 2rem;">
+            <p style="color: var(--text-light); margin-bottom: 2rem;"><strong>{{ jobs|length }} job(s) found</strong></p>
+            
+            <div class="job-listings">
+                {% for job in jobs %}
+                <div class="job-card fade-in">
+                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <div class="job-title">{{ job.title }}</div>
+                            <div class="job-company">{{ job.employer.business_name }}</div>
+                        </div>
+                        <span class="badge status-active">Active</span>
+                    </div>
+                    
+                    <div class="job-location">📍 {{ job.location }}, {{ job.province }}</div>
+                    
+                    <div style="background: var(--very-light-green); padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                        <div class="job-description" style="color: var(--text-dark);">{{ job.description }}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <div>
+                            <strong style="color: var(--primary-dark);">Category:</strong><br>
+                            <span style="color: var(--primary);">{{ job.category }}</span>
+                        </div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Salary:</strong><br>
+                            <span class="job-salary">₱{{ job.salary|default:"Negotiable" }}</span>
+                        </div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Posted:</strong><br>
+                            <span style="color: var(--text-light);">{{ job.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <a href="#" onclick="viewJobDetails({{ job.id }})" class="btn btn-primary" style="flex: 1;">View Full Details</a>
+                        {% if user.is_authenticated and user.jobseeker %}
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-outline" style="flex: 1;">Apply Now</a>
+                        {% else %}
+                            <button class="btn btn-outline" style="flex: 1;" onclick="showLoginAlert()">Apply Now</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div style="background: white; border-radius: 10px; padding: 4rem 2rem; text-align: center; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h2 style="color: var(--primary-dark); margin-bottom: 1rem;">No Jobs Found</h2>
+            <p style="color: var(--text-light); margin-bottom: 2rem; font-size: 1.1rem;">
+                {% if request.GET.q or request.GET.category or request.GET.province %}
+                    We couldn't find any jobs matching your filters. Try adjusting your search criteria.
+                {% else %}
+                    No jobs are currently available. Please check back soon!
+                {% endif %}
+            </p>
+            <a href="{% url 'job_list' %}" class="btn btn-primary">View All Jobs</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Job Details Modal (placeholder) -->
+<div id="jobDetailsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 2rem;">
+    <div style="background: white; border-radius: 10px; max-width: 600px; margin: 2rem auto; padding: 2rem; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <button onclick="closeJobDetails()" style="position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary-dark);">✕</button>
+        <div id="jobDetailsContent"></div>
+    </div>
+</div>
+
+<script>
+    function viewJobDetails(jobId) {
+        alert('Job details modal - Job ID: ' + jobId);
+        // Implementation for viewing full job details
+    }
+
+    function closeJobDetails() {
+        document.getElementById('jobDetailsModal').style.display = 'none';
+    }
+
+    function showLoginAlert() {
+        alert('Please login or sign up to apply for jobs!');
+        window.location.href = '{% url 'auth' %}';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('jobDetailsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

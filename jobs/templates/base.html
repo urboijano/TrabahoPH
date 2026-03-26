@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TrabahoPH - Trabaho Portal{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/green-theme.css' %}">
+    <style>
+        /* Additional responsive adjustments */
+        @media (max-width: 480px) {
+            .hero h2 { font-size: 1.5rem; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 15px; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div>
+                <h1 class="logo"><i class="fas fa-briefcase"></i> TrabahoPH</h1>
+                <p class="tagline">Rural Job Opportunities Portal</p>
+            </div>
+            <div class="nav-buttons">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'index' %}" class="btn btn-secondary">Home</a>
+                    {% if user.jobseeker %}
+                        <a href="{% url 'seeker_dashboard' %}" class="btn btn-secondary">My Dashboard</a>
+                    {% elif user.employer %}
+                        <a href="{% url 'employer_dashboard' %}" class="btn btn-secondary">My Dashboard</a>
+                    {% elif user.is_staff %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Admin Panel</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+                {% else %}
+                    {% if request.resolver_match.url_name == 'auth' or request.resolver_match.url_name == 'register' %}
+                        <a href="{% url 'index' %}" class="btn btn-secondary">Back to Home</a>
+                    {% else %}
+                        <a href="{% url 'auth' %}" class="btn btn-secondary">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-briefcase"></i> TrabahoPH</h4>
+                    <p>Connecting rural communities with employment opportunities.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'job_list' %}">Browse Jobs</a></li>
+                        <li><a href="{% url 'auth' %}">Login/Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li>Email: info@trabahoph.com</li>
+                        <li>Phone: +63 (xxx) xxx-xxxx</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#" onclick="openModal('aboutModal'); return false;">About Us</a></li>
+                        <li><a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a></li>
+                        <li><a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModals()"></div>
+
+    <!-- About Us Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModals()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2><i class="fas fa-building"></i> About TrabahoPH</h2>
+            </div>
+            <div class="modal-body">
+                <p>TrabahoPH is a revolutionary job portal dedicated to connecting job seekers with employers across rural and urban Philippines. Our mission is to bridge the employment gap and create meaningful career opportunities for every Filipino.</p>
+                <h3>Our Vision</h3>
+                <p>To empower Filipino communities through accessible employment opportunities and professional growth.</p>
+                <h3>Our Mission</h3>
+                <p>We strive to provide a seamless, user-friendly platform that connects talented job seekers with employers, enabling economic growth and personal development across the nation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModals()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt"></i> Privacy Policy</h2>
+            </div>
+            <div class="modal-body">
+                <h3>1. Information Collection</h3>
+                <p>We collect information you provide when creating an account, posting jobs, or applying for positions on our platform.</p>
+                <h3>2. Data Protection</h3>
+                <p>Your personal data is protected with industry-standard encryption and security measures. We do not share your information with third parties without your consent.</p>
+                <h3>3. Cookie Usage</h3>
+                <p>We use cookies to enhance your browsing experience and provide personalized content recommendations.</p>
+                <h3>4. Your Rights</h3>
+                <p>You have the right to access, modify, or delete your personal information at any time through your account settings.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light);">Last updated: March 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModals()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
+            </div>
+            <div class="modal-body">
+                <h3>1. Acceptance of Terms</h3>
+                <p>By using TrabahoPH, you agree to comply with these terms and conditions. If you do not agree, please do not use our platform.</p>
+                <h3>2. User Responsibilities</h3>
+                <p>Users are responsible for maintaining the confidentiality of their account information and for all activities that occur under their account.</p>
+                <h3>3. Prohibited Activities</h3>
+                <p>Users must not engage in illegal activities, harassment, fraud, or any conduct that violates our community guidelines.</p>
+                <h3>4. Limitation of Liability</h3>
+                <p>TrabahoPH is provided "as is" without warranties. We are not liable for indirect damages or losses arising from platform use.</p>
+                <h3>5. Changes to Terms</h3>
+                <p>We reserve the right to modify these terms at any time. Continued use of the platform indicates acceptance of updated terms.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light);">Last updated: March 2026</p>
+            </div>
+        </div>
+    </div>
+
+    {% load static %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // Back to Top Button Functionality
+        const backToTopBtn = document.getElementById('backToTopBtn');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Modal Functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModals();
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

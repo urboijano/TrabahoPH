@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard - Employer{% endblock %}
+
+{% block content %}
+<div class="admin-main">
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <div class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="{% url 'employer_dashboard' %}" class="admin-nav-link active">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="#" class="admin-nav-link" onclick="postNewJob()">
+                    <span>➕</span> Post Job
+                </a>
+                <a href="#" class="admin-nav-link" onclick="manageJobs()">
+                    <span>💼</span> My Jobs
+                </a>
+                <a href="#" class="admin-nav-link" onclick="editProfile()">
+                    <span>🏢</span> Company Profile
+                </a>
+                <a href="{% url 'index' %}" class="admin-nav-link">
+                    <span>🏠</span> Home
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <div class="page-header">
+                <h1>Employer Dashboard</h1>
+                <div>
+                    <span style="margin-right: 20px; font-size: 1.1rem;">Welcome, {{ employer.business_name }}!</span>
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-content">
+                        <h3>{{ total_jobs }}</h3>
+                        <p>Total Jobs Posted</p>
+                        <small>All time</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-content">
+                        <h3>{{ active_jobs }}</h3>
+                        <p>Active Jobs</p>
+                        <small>Currently accepting</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3>{{ total_applications }}</h3>
+                        <p>Applications Received</p>
+                        <small>All time</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3>{{ pending_count }}</h3>
+                        <p>Pending</p>
+                        <small>Awaiting review</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Profile Section -->
+            <div style="background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+                <h2 style="color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 2px solid var(--light-green); padding-bottom: 1rem;">Company Profile</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <strong style="color: var(--primary-dark);">Company Name:</strong><br>
+                        {{ employer.business_name }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Contact Person:</strong><br>
+                        {{ employer.user.get_full_name }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Email:</strong><br>
+                        {{ employer.user.email }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Phone:</strong><br>
+                        {{ employer.contact_number|default:"Not provided" }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Business Type:</strong><br>
+                        {{ employer.business_type|default:"Not specified" }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Location:</strong><br>
+                        {{ employer.barangay }}, {{ employer.municipality }}, {{ employer.province }}
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <strong style="color: var(--primary-dark);">Description:</strong><br>
+                    <p>{{ employer.business_description|default:"No description provided" }}</p>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="editProfile()">Edit Profile</button>
+            </div>
+
+            <!-- Recent Jobs Posted -->
+            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08); margin-bottom: 2rem;">
+                <h2 style="color: var(--primary-dark); padding: 1.5rem 2rem; margin: 0; border-bottom: 2px solid var(--light-green);">Recent Jobs Posted</h2>
+                
+                {% if recent_jobs %}
+                    <div class="table-container" style="box-shadow: none;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Location</th>
+                                    <th>Posted On</th>
+                                    <th>Status</th>
+                                    <th>Applications</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in recent_jobs %}
+                                <tr>
+                                    <td><strong>{{ job.title }}</strong></td>
+                                    <td>{{ job.location }}, {{ job.province }}</td>
+                                    <td>{{ job.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge {% if job.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                            {% if job.is_active %}Active{% else %}Closed{% endif %}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold;">{{ job.application_count|default:0 }}</td>
+                                    <td>
+                                        <a href="#" class="btn-small btn-info" onclick="viewApplications({{ job.id }})">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div style="padding: 2rem; text-align: center;">
+                        <p style="color: var(--text-light); font-size: 1.1rem;">You haven't posted any jobs yet.</p>
+                        <button class="btn btn-primary" style="margin-top: 1rem;" onclick="postNewJob()">Post Your First Job</button>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Applications -->
+            {% if recent_applications %}
+            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+                <h2 style="color: var(--primary-dark); padding: 1.5rem 2rem; margin: 0; border-bottom: 2px solid var(--light-green);">Recent Applications</h2>
+                
+                <div class="table-container" style="box-shadow: none;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Applicant Name</th>
+                                <th>Job Title</th>
+                                <th>Applied On</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in recent_applications %}
+                            <tr>
+                                <td><strong>{{ application.job_seeker.user.get_full_name }}</strong></td>
+                                <td>{{ application.job.title }}</td>
+                                <td>{{ application.applied_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge status-{{ application.status|lower }}">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-small btn-info" onclick="viewApplication({{ application.id }})">Review</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '{% url 'index' %}';
+        }
+    }
+
+    function editProfile() {
+        alert('Profile editing feature coming soon!');
+    }
+
+    function postNewJob() {
+        alert('Job posting feature coming soon!');
+    }
+
+    function manageJobs() {
+        alert('Job management feature coming soon!');
+    }
+
+    function viewApplications(jobId) {
+        alert('Viewing applications for job ' + jobId);
+    }
+
+    function viewApplication(applicationId) {
+        alert('Viewing application ' + applicationId);
+    }
+</script>
+{% endblock %}

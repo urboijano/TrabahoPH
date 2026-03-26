@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - TrabahoPH{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h2>Find Your Perfect Job in the Philippines</h2>
+        <p>Discover amazing job opportunities in rural and urban areas. Connect with top employers and build your career with TrabahoPH.</p>
+        
+        <div class="search-bar">
+            <div class="search-input-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search jobs, skills, or locations..." />
+            </div>
+            <button class="btn btn-primary" onclick="performSearch()">Search</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="number">1,250+</span>
+                <span class="label">Active Jobs</span>
+            </div>
+            <div class="stat">
+                <span class="number">5,300+</span>
+                <span class="label">Job Seekers</span>
+            </div>
+            <div class="stat">
+                <span class="number">850+</span>
+                <span class="label">Employers</span>
+            </div>
+            <div class="stat">
+                <span class="number">15K+</span>
+                <span class="label">Successful Hires</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Jobs Section -->
+<section class="jobs-section">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--text-dark); font-size: 2rem; font-weight: 700;">Featured Opportunities</h2>
+        
+        <div class="filters">
+            <select id="jobCategory" onchange="filterJobs()">
+                <option value="">All Categories</option>
+                <option value="IT">IT & Technology</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Service">Service</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Education">Education</option>
+                <option value="Construction">Construction</option>
+                <option value="Retail">Retail & Sales</option>
+            </select>
+
+            <select id="provinceFilter" onchange="filterJobs()">
+                <option value="">All Provinces</option>
+                <option value="Quezon">Quezon</option>
+                <option value="Laguna">Laguna</option>
+                <option value="Batangas">Batangas</option>
+                <option value="Cavite">Cavite</option>
+                <option value="Rizal">Rizal</option>
+                <option value="Bulacan">Bulacan</option>
+            </select>
+        </div>
+
+        <div class="job-listings" id="jobListings">
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="job-card fade-in">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="job-company">{{ job.employer.business_name }}</div>
+                    <div class="job-location">
+                        <i class="fas fa-map-marker-alt"></i> {{ job.location }}, {{ job.province }}
+                    </div>
+                    <div class="job-description">{{ job.description|truncatewords:20 }}</div>
+                    <div class="job-salary"><i class="fas fa-dollar-sign"></i> ₱{{ job.salary|default:"Negotiable" }}</div>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{% url 'job_list' %}?job_id={{ job.id }}" class="btn btn-primary" style="flex: 1;">View Details</a>
+                        {% if user.is_authenticated and user.jobseeker %}
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-outline" style="flex: 1;">Apply Now</a>
+                        {% else %}
+                            <button class="btn btn-outline" onclick="showLoginAlert()" style="flex: 1;">Apply Now</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                    <p style="font-size: 1.1rem; color: var(--text-light);">No jobs available at the moment. Check back soon!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'job_list' %}" class="btn btn-primary">View All Jobs</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2>Why Choose TrabahoPH?</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
+                <h3>Targeted Opportunities</h3>
+                <p>Find jobs tailored to your skills and location in rural Philippines.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Direct Employer Connection</h3>
+                <p>Connect directly with employers looking for your profile.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Mobile Friendly</h3>
+                <p>Access job opportunities anytime, anywhere on your mobile device.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                <h3>SMS Alerts</h3>
+                <p>Get notified via SMS about new job opportunities matching your profile.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-book"></i></div>
+                <h3>Skill Development</h3>
+                <p>Access resources to develop and improve your professional skills.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                <h3>Verified Employers</h3>
+                <p>All employers on our platform are verified and trusted.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills/Resources Section -->
+<section class="skills-section">
+    <div class="container">
+        <h2>Skill Development Resources</h2>
+        
+        <div class="resource-grid">
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-file-alt"></i> Resume Writing Tips</h3>
+                <p>Learn how to craft a compelling resume that catches employer's attention.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-briefcase"></i> Interview Preparation</h3>
+                <p>Get tips and strategies to ace your job interviews.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-tools"></i> Skills Training</h3>
+                <p>Explore training programs to develop in-demand skills.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-lightbulb"></i> Career Guidance</h3>
+                <p>Get expert advice on career planning and development.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-handshake"></i> Professional Networking</h3>
+                <p>Build meaningful connections with industry professionals and mentors.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="resource-card fade-in">
+                <h3><i class="fas fa-dollar-sign"></i> Salary Negotiation</h3>
+                <p>Learn strategies to negotiate competitive compensation packages.</p>
+                <a href="#" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 5rem 2rem; text-align: center;">
+    <div class="container">
+        <h2 style="margin-bottom: 1rem; font-size: 2.5rem; font-weight: 700;">Ready to Start Your Career Journey?</h2>
+        <p style="margin-bottom: 2rem; font-size: 1.2rem; font-weight: 300; opacity: 0.95;">Join thousands of job seekers and employers already using TrabahoPH.</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'auth' %}" class="btn btn-primary" style="margin: 0 10px 10px 0;">Get Started</a>
+        {% endif %}
+        <a href="{% url 'job_list' %}" class="btn btn-secondary">Browse Jobs</a>
+    </div>
+</section>
+
+<script>
+    function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value;
+        if (searchTerm) {
+            window.location.href = `{% url 'job_list' %}?q=${searchTerm}`;
+        } else {
+            window.location.href = `{% url 'job_list' %}`;
+        }
+    }
+
+    function filterJobs() {
+        const category = document.getElementById('jobCategory').value;
+        const province = document.getElementById('provinceFilter').value;
+        let url = `{% url 'job_list' %}?`;
+        if (category) url += `category=${category}&`;
+        if (province) url += `province=${province}`;
+        window.location.href = url;
+    }
+
+    function showLoginAlert() {
+        alert('Please login or sign up to apply for jobs!');
+        window.location.href = `{% url 'auth' %}`;
+    }
+
+    // Fade-in animation on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+            }
+        });
+    });
+
+    document.querySelectorAll('.feature-card, .resource-card').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+{% endblock %}

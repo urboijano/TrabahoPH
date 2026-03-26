@@ -1,0 +1,202 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --green-50: #f0fdf4;
+        --green-100: #dcfce7;
+        --green-600: #16a34a;
+    }
+</style>
+<div class="page-header">
+    <div class="header-content">
+        <h1><i class="bi bi-file-earmark-text"></i> Manage Applications</h1>
+        <p class="header-subtitle">View and manage job applications</p>
+    </div>
+    <div class="filter-buttons">
+        <a href="{% url 'manage_applications' %}" class="btn btn-secondary {% if not status_filter %}active{% endif %}">
+            All
+        </a>
+        <a href="{% url 'manage_applications' %}?status=pending" class="btn btn-secondary {% if status_filter == 'pending' %}active{% endif %}">
+            Pending
+        </a>
+        <a href="{% url 'manage_applications' %}?status=accepted" class="btn btn-secondary {% if status_filter == 'accepted' %}active{% endif %}">
+            Accepted
+        </a>
+        <a href="{% url 'manage_applications' %}?status=rejected" class="btn btn-secondary {% if status_filter == 'rejected' %}active{% endif %}">
+            Rejected
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Applicant</th>
+                <th>Job Position</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td><strong>{{ app.job_seeker.user.first_name }} {{ app.job_seeker.user.last_name }}</strong></td>
+                <td>{{ app.job.title }}</td>
+                <td>{{ app.job_seeker.user.email }}</td>
+                <td>{{ app.job_seeker.mobile }}</td>
+                <td>
+                    <span class="status-badge status-{{ app.status }}">
+                        {{ app.status|upper }}
+                    </span>
+                </td>
+                <td>{{ app.applied_at|date:"M d, Y" }}</td>
+                <td class="actions">
+                    <a href="{% url 'admin:jobs_application_change' app.id %}" class="btn-small btn-info">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">No applications found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+        background: var(--green-600);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-content h1 {
+        color: white;
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .header-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0.5rem 0 0 0;
+        font-size: 0.95rem;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-buttons .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        background: white;
+        color: var(--green-600);
+        border: none;
+    }
+
+    .filter-buttons .btn.active {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid white;
+    }
+
+    .filter-buttons .btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .admin-table th {
+        padding: 1rem;
+        text-align: left;
+        color: #059669;
+        font-weight: 600;
+    }
+
+    .admin-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-accepted {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-rejected {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-small {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: white;
+    }
+
+    .btn-info {
+        background: #10b981;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard - Job Seeker{% endblock %}
+
+{% block content %}
+<div class="admin-main">
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <div class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="{% url 'seeker_dashboard' %}" class="admin-nav-link active">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="{% url 'job_list' %}" class="admin-nav-link">
+                    <span>🔍</span> Browse Jobs
+                </a>
+                <a href="#" class="admin-nav-link" onclick="editProfile()">
+                    <span>👤</span> My Profile
+                </a>
+                <a href="#" class="admin-nav-link" onclick="manageSkills()">
+                    <span>🎓</span> My Skills
+                </a>
+                <a href="{% url 'index' %}" class="admin-nav-link">
+                    <span>🏠</span> Home
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <div class="page-header">
+                <h1>My Dashboard</h1>
+                <div>
+                    <span style="margin-right: 20px; font-size: 1.1rem;">Welcome, {{ user.first_name }}!</span>
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3>{{ total_applications }}</h3>
+                        <p>Total Applications</p>
+                        <small>All time applications</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3>{{ pending_count }}</h3>
+                        <p>Pending</p>
+                        <small>Awaiting review</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3>{{ accepted_count }}</h3>
+                        <p>Accepted</p>
+                        <small>Successfully approved</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-content">
+                        <h3>{{ rejected_count }}</h3>
+                        <p>Rejected</p>
+                        <small>Not selected</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Profile Section -->
+            <div style="background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+                <h2 style="color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 2px solid var(--light-green); padding-bottom: 1rem;">My Profile</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <strong style="color: var(--primary-dark);">Name:</strong><br>
+                        {{ job_seeker.user.get_full_name }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Email:</strong><br>
+                        {{ job_seeker.user.email }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Phone:</strong><br>
+                        {{ job_seeker.mobile|default:"Not provided" }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Location:</strong><br>
+                        {{ job_seeker.barangay }}, {{ job_seeker.municipality }}, {{ job_seeker.province }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">Skills:</strong><br>
+                        {% if job_seeker.skills %}
+                            {{ job_seeker.skills|truncatewords:5 }}
+                        {% else %}
+                            <span style="color: var(--text-light);">No skills added yet</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-dark);">SMS Alerts:</strong><br>
+                        <span class="badge {% if job_seeker.sms_alerts %}status-active{% else %}status-inactive{% endif %}">
+                            {% if job_seeker.sms_alerts %}Enabled{% else %}Disabled{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 1.5rem;" onclick="editProfile()">Edit Profile</button>
+            </div>
+
+            <!-- Recent Applications -->
+            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+                <h2 style="color: var(--primary-dark); padding: 1.5rem 2rem; margin: 0; border-bottom: 2px solid var(--light-green);">Recent Applications</h2>
+                
+                {% if recent_applications %}
+                    <div class="table-container" style="box-shadow: none;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Applied On</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in recent_applications %}
+                                <tr>
+                                    <td><strong>{{ application.job.title }}</strong></td>
+                                    <td>{{ application.job.employer.business_name }}</td>
+                                    <td>{{ application.job.location }}</td>
+                                    <td>{{ application.applied_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge status-{{ application.status|lower }}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'job_list' %}?job_id={{ application.job.id }}" class="btn-small btn-info">View Job</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div style="padding: 2rem; text-align: center;">
+                        <p style="color: var(--text-light); font-size: 1.1rem;">You haven't applied for any jobs yet.</p>
+                        <a href="{% url 'job_list' %}" class="btn btn-primary" style="margin-top: 1rem;">Browse Available Jobs</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recommended Jobs -->
+            {% if recommended_jobs %}
+            <div style="margin-top: 2rem; background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
+                <h2 style="color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 2px solid var(--light-green); padding-bottom: 1rem;">Recommended For You</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    {% for job in recommended_jobs %}
+                    <div class="job-card">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-company">{{ job.employer.business_name }}</div>
+                        <div class="job-location">📍 {{ job.location }}, {{ job.province }}</div>
+                        <div class="job-description">{{ job.description|truncatewords:15 }}</div>
+                        <div class="job-salary">💰 ₱{{ job.salary|default:"Negotiable" }}</div>
+                        <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                            <a href="{% url 'job_list' %}?job_id={{ job.id }}" class="btn btn-primary" style="flex: 1;">View Details</a>
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-outline" style="flex: 1;">Apply</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '{% url 'index' %}';
+            // In a real application, you would make an AJAX call to logout
+        }
+    }
+
+    function editProfile() {
+        alert('Profile editing feature coming soon!');
+    }
+
+    function manageSkills() {
+        alert('Skill management feature coming soon!');
+    }
+</script>
+{% endblock %}

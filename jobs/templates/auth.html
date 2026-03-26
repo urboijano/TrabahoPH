@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login & Sign Up - TrabahoPH{% endblock %}
+
+{% block content %}
+<style>
+    .auth-page {
+        min-height: calc(100vh - 200px);
+        padding: 3rem 2rem;
+        background: linear-gradient(135deg, var(--very-light-green) 0%, #f0fdf4 100%);
+    }
+
+    .auth-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h1 {
+        color: var(--primary-dark);
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-light);
+        font-size: 1rem;
+    }
+
+    .auth-form {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 24px rgba(39, 167, 69, 0.1);
+        border: 1px solid var(--border);
+        margin-bottom: 2rem;
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-form h2 {
+        color: var(--primary-dark);
+        margin-bottom: 0.5rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .auth-form h2 i {
+        font-size: 1.8rem;
+        color: var(--primary);
+    }
+
+    .auth-form .subtitle {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+
+    .auth-form input,
+    .auth-form select,
+    .auth-form textarea {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-dark);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+    }
+
+    .auth-form input:focus,
+    .auth-form select:focus,
+    .auth-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(39, 167, 69, 0.1);
+    }
+
+    .auth-form textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .auth-form label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-dark);
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .auth-form label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        cursor: pointer;
+        accent-color: var(--primary);
+    }
+
+    .auth-form label a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-form label a:hover {
+        text-decoration: underline;
+    }
+
+    .auth-form .btn {
+        width: 100%;
+        padding: 14px;
+        margin-top: 1rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-toggle {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 2px solid var(--border);
+        margin-top: 2rem;
+    }
+
+    .form-toggle p {
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .toggle-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-direction: column;
+    }
+
+    .toggle-buttons .btn {
+        margin: 0.5rem 0;
+        padding: 12px 16px;
+        flex: 1;
+    }
+
+    .messages {
+        margin-bottom: 1.5rem;
+        animation: slideUp 0.3s ease;
+    }
+
+    .alert {
+        padding: 14px 16px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        border-left: 4px solid;
+        font-weight: 500;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        border-left-color: #ef4444;
+        color: #991b1b;
+    }
+
+    .alert-success {
+        background: #dcfce7;
+        border-left-color: #10b981;
+        color: #166534;
+    }
+
+    .field-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .field-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media (max-width: 640px) {
+        .auth-page {
+            padding: 2rem 1rem;
+        }
+
+        .auth-form {
+            padding: 2rem;
+        }
+
+        .auth-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .field-group {
+            grid-template-columns: 1fr;
+        }
+
+        .toggle-buttons {
+            flex-direction: column;
+        }
+
+        .toggle-buttons .btn {
+            min-width: 100%;
+        }
+    }
+</style>
+
+<div class="auth-page">
+    <div class="container auth-container">
+        <div class="auth-header">
+            <h1><i class="fas fa-briefcase"></i> TrabahoPH</h1>
+            <p>Connecting opportunities with talent</p>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}danger{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form">
+            <h2><i class="fas fa-sign-in-alt"></i> Welcome Back</h2>
+            <p class="subtitle">Sign in to your TrabahoPH account</p>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="text" name="email" placeholder="📧 Email or Username" required>
+                <input type="password" name="password" placeholder="🔐 Password" required>
+                <label>
+                    <input type="checkbox" name="remember_me">
+                    Remember me on this device
+                </label>
+                <button type="submit" class="btn btn-primary">Sign In to Your Account</button>
+            </form>
+            <div class="form-toggle">
+                <p>New to TrabahoPH?</p>
+                <div class="toggle-buttons">
+                    <button class="btn btn-outline" onclick="showRegisterSeeker()"><i class="fas fa-user-tie"></i> Register as Job Seeker</button>
+                    <button class="btn btn-outline" onclick="showRegisterEmployer()"><i class="fas fa-building"></i> Register as Employer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Seeker Registration Form -->
+        <div id="registerSeekerForm" class="auth-form hidden">
+            <h2><i class="fas fa-user-tie"></i> Join as Job Seeker</h2>
+            <p class="subtitle">Create your account and start finding opportunities</p>
+            <form method="post" action="{% url 'register_seeker' %}">
+                {% csrf_token %}
+                <div class="field-group full">
+                    <input type="text" name="fullName" placeholder="👤 Full Name" required>
+                </div>
+                <div class="field-group full">
+                    <input type="email" name="email" placeholder="📧 Email Address" required>
+                </div>
+                <div class="field-group full">
+                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
+                </div>
+                <div class="field-group full">
+                    <select name="province" required>
+                        <option value="">📍 Select Your Province</option>
+                        <option value="Quezon">Quezon</option>
+                        <option value="Laguna">Laguna</option>
+                        <option value="Batangas">Batangas</option>
+                        <option value="Cavite">Cavite</option>
+                        <option value="Rizal">Rizal</option>
+                        <option value="Bulacan">Bulacan</option>
+                    </select>
+                </div>
+                <div class="field-group full">
+                    <textarea name="skills" placeholder="💼 Your Skills (comma-separated, e.g., Java, Communication)"></textarea>
+                </div>
+                <div class="field-group full">
+                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
+                </div>
+                <div class="field-group full">
+                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
+                </div>
+                <label>
+                    <input type="checkbox" name="terms" required>
+                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
+                </label>
+                <button type="submit" class="btn btn-primary">Create My Account</button>
+            </form>
+            <div class="form-toggle">
+                <p>Already have an account?</p>
+                <div class="toggle-buttons">
+                    <button class="btn btn-secondary" onclick="showLogin()">Sign In</button>
+                    <button class="btn btn-outline" onclick="showRegisterEmployer()">Register as Employer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employer Registration Form -->
+        <div id="registerEmployerForm" class="auth-form hidden">
+            <h2><i class="fas fa-building"></i> Join as Employer</h2>
+            <p class="subtitle">Create your account and start posting job opportunities</p>
+            <form method="post" action="{% url 'register_employer' %}">
+                {% csrf_token %}
+                <div class="field-group full">
+                    <input type="text" name="businessName" placeholder="🏢 Business/Organization Name" required>
+                </div>
+                <div class="field-group full">
+                    <input type="text" name="contactPerson" placeholder="👤 Contact Person Name" required>
+                </div>
+                <div class="field-group full">
+                    <input type="email" name="email" placeholder="📧 Email Address" required>
+                </div>
+                <div class="field-group full">
+                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
+                </div>
+                <div class="field-group full">
+                    <select name="province" required>
+                        <option value="">📍 Select Your Province</option>
+                        <option value="Quezon">Quezon</option>
+                        <option value="Laguna">Laguna</option>
+                        <option value="Batangas">Batangas</option>
+                        <option value="Cavite">Cavite</option>
+                        <option value="Rizal">Rizal</option>
+                        <option value="Bulacan">Bulacan</option>
+                    </select>
+                </div>
+                <div class="field-group full">
+                    <textarea name="businessDescription" placeholder="📝 Brief Description of Your Business (optional)"></textarea>
+                </div>
+                <div class="field-group full">
+                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
+                </div>
+                <div class="field-group full">
+                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
+                </div>
+                <label>
+                    <input type="checkbox" name="terms" required>
+                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
+                </label>
+                <button type="submit" class="btn btn-primary">Create My Account</button>
+            </form>
+            <div class="form-toggle">
+                <p>Already have an account?</p>
+                <div class="toggle-buttons">
+                    <button class="btn btn-secondary" onclick="showLogin()">Sign In</button>
+                    <button class="btn btn-outline" onclick="showRegisterSeeker()">Register as Job Seeker</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showLogin() {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerSeekerForm').classList.add('hidden');
+        document.getElementById('registerEmployerForm').classList.add('hidden');
+    }
+
+    function showRegisterSeeker() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerSeekerForm').classList.remove('hidden');
+        document.getElementById('registerEmployerForm').classList.add('hidden');
+    }
+
+    function showRegisterEmployer() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerSeekerForm').classList.add('hidden');
+        document.getElementById('registerEmployerForm').classList.remove('hidden');
+    }
+
+    // Validate password confirmation
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const password = form.querySelector('input[name="password"]');
+        const confirmPassword = form.querySelector('input[name="confirmPassword"]');
+
+        if (password && confirmPassword && password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('Passwords do not match. Please try again.');
+        }
+    });
+</script>
+{% endblock %}

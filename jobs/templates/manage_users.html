@@ -1,0 +1,214 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --green-50: #f0fdf4;
+        --green-100: #dcfce7;
+        --green-600: #16a34a;
+    }
+</style>
+<div class="page-header">
+    <div class="header-content">
+        <h1><i class="bi bi-people-fill"></i> Manage Users</h1>
+        <p class="header-subtitle">Manage job seekers and employers</p>
+    </div>
+</div>
+
+<div class="user-tabs">
+    <div class="tab-content">
+        <h2>Job Seekers</h2>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Province</th>
+                        <th>Barangay</th>
+                        <th>SMS Alerts</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seeker in job_seekers %}
+                    <tr>
+                        <td><strong>{{ seeker.user.first_name }} {{ seeker.user.last_name }}</strong></td>
+                        <td>{{ seeker.user.email }}</td>
+                        <td>{{ seeker.mobile }}</td>
+                        <td>{{ seeker.province }}</td>
+                        <td>{{ seeker.barangay }}</td>
+                        <td>
+                            {% if seeker.sms_alerts %}
+                                <span class="badge-success">Yes</span>
+                            {% else %}
+                                <span class="badge-danger">No</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ seeker.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'admin:jobs_jobseeker_change' seeker.id %}" class="btn-small btn-info">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem;">No job seekers found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <h2>Employers</h2>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Business Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                        <th>Province</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employer in employers %}
+                    <tr>
+                        <td><strong>{{ employer.business_name }}</strong></td>
+                        <td>{{ employer.user.first_name }} {{ employer.user.last_name }}</td>
+                        <td>{{ employer.user.email }}</td>
+                        <td>{{ employer.contact_number }}</td>
+                        <td><span class="badge">{{ employer.business_type }}</span></td>
+                        <td>{{ employer.province }}</td>
+                        <td>{{ employer.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'admin:jobs_employer_change' employer.id %}" class="btn-small btn-info">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 2rem;">No employers found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+        background: var(--green-600);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+    }
+
+    .header-content h1 {
+        color: white;
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .header-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0.5rem 0 0 0;
+        font-size: 0.95rem;
+    }
+
+    .user-tabs {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .tab-content h2 {
+        color: #10b981;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .admin-table th {
+        padding: 1rem;
+        text-align: left;
+        color: #059669;
+        font-weight: 600;
+    }
+
+    .admin-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .badge {
+        display: inline-block;
+        background: #10b981;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .badge-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-danger {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .btn-small {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: white;
+    }
+
+    .btn-info {
+        background: #10b981;
+    }
+</style>
+{% endblock %}
