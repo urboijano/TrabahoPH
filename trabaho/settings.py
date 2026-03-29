@@ -117,3 +117,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login URL
 LOGIN_URL = 'auth'
 LOGIN_REDIRECT_URL = 'index'
+
+# Google reCAPTCHA Settings
+RECAPTCHA_SITE_KEY = '6LeYtJwsAAAAAJ06RXWDxBdVzDslTxKi0H5Zx9vQ'  # Replace with your Site Key
+RECAPTCHA_SECRET_KEY = '6LeYtJwsAAAAAOBOms6R7RvfC8ZL8tpcrmPyGLOu'  # Replace with your Secret Key
+
+# Email Configuration
+# For production with Gmail SMTP:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'your-16-char-app-password'  # App password generated from Google
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Use your actual Gmail
+
+# For testing/development, uncomment the line below to see emails in console:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

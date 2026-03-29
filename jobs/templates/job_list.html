@@ -3,22 +3,393 @@
 
 {% block title %}Browse Jobs - TrabahoPH{% endblock %}
 
+{% block extra_css %}
+<style>
+    .jobs-container {
+        padding: 3rem 0;
+        min-height: calc(100vh - 300px);
+        background: linear-gradient(135deg, #f9fafb 0%, #f0f9f5 100%);
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        color: var(--primary-dark);
+        font-size: 2.5rem;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .page-header i {
+        color: var(--primary);
+        font-size: 2.5rem;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+    }
+
+    .filter-card:hover {
+        box-shadow: 0 8px 20px rgba(27, 92, 46, 0.08);
+    }
+
+    .filter-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .filter-title i {
+        color: var(--primary);
+        font-size: 1.25rem;
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        align-items: flex-end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid var(--light-green);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        background-color: white;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(39, 167, 69, 0.1);
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    /* Results Section */
+    .results-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .results-count {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .results-count i {
+        color: var(--primary);
+        font-size: 1.25rem;
+    }
+
+    .results-count strong {
+        color: var(--primary-dark);
+    }
+
+    /* Job Listings Grid */
+    .job-listings {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Job Card */
+    .job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        animation: slideInUp 0.4s ease forwards;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .job-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(27, 92, 46, 0.12);
+        border-color: var(--primary-light);
+    }
+
+    .job-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .job-card-content {
+        flex: 1;
+    }
+
+    .job-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 0.3rem;
+        line-height: 1.3;
+    }
+
+    .job-company {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .job-company i {
+        color: var(--primary);
+        font-size: 0.85rem;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: rgba(63, 192, 80, 0.15);
+        color: var(--primary);
+    }
+
+    .job-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--very-light-green);
+        border-radius: 8px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .meta-item i {
+        color: var(--primary);
+        font-size: 1.1rem;
+        width: 1.2rem;
+        text-align: center;
+    }
+
+    .meta-label {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        font-weight: 500;
+    }
+
+    .meta-value {
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .job-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+        margin: 1rem 0;
+        font-size: 0.95rem;
+    }
+
+    .job-location i {
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    .job-description {
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: var(--very-light-green);
+        border-left: 4px solid var(--primary);
+        border-radius: 6px;
+    }
+
+    .job-footer {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .job-footer .btn {
+        flex: 1;
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: white;
+        border-radius: 12px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        opacity: 0.7;
+    }
+
+    .empty-state h2 {
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .empty-state p {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .filter-form {
+            grid-template-columns: 1fr;
+        }
+
+        .job-listings {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .filter-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .filter-buttons .btn {
+            width: 100%;
+        }
+
+        .job-meta {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fade-in {
+        animation: slideInUp 0.4s ease forwards;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.1s; }
+    .fade-in:nth-child(3) { animation-delay: 0.15s; }
+    .fade-in:nth-child(n+4) { animation-delay: 0.2s; }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="jobs-section" style="padding: 3rem 0; min-height: calc(100vh - 300px);">
+<section class="jobs-container">
     <div class="container">
-        <h1 style="color: var(--primary-dark); margin-bottom: 2rem; font-size: 2.5rem;">💼 Browse Available Jobs</h1>
+        <div class="page-header">
+            <i class="fas fa-briefcase"></i>
+            <h1>Browse Available Jobs</h1>
+        </div>
         
         <!-- Filters -->
-        <div style="background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
-            <h3 style="color: var(--primary-dark); margin-bottom: 1.5rem;">Filter Jobs</h3>
-            <form method="GET" id="filterForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                <div>
-                    <label for="searchInput" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Search</label>
-                    <input type="text" id="searchInput" name="q" placeholder="Search job title, location..." value="{{ request.GET.q }}" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px;">
+        <div class="filter-card">
+            <div class="filter-title">
+                <i class="fas fa-sliders-h"></i>
+                Filter Jobs
+            </div>
+            <form method="GET" id="filterForm" class="filter-form">
+                <div class="form-group">
+                    <label for="searchInput">
+                        <i class="fas fa-search" style="margin-right: 0.4rem; color: var(--primary);"></i>
+                        Search
+                    </label>
+                    <input type="text" id="searchInput" name="q" placeholder="Job title, keywords..." value="{{ request.GET.q }}">
                 </div>
-                <div>
-                    <label for="categorySelect" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Category</label>
-                    <select id="categorySelect" name="category" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px; cursor: pointer;">
+                <div class="form-group">
+                    <label for="categorySelect">
+                        <i class="fas fa-tag" style="margin-right: 0.4rem; color: var(--primary);"></i>
+                        Category
+                    </label>
+                    <select id="categorySelect" name="category">
                         <option value="">All Categories</option>
                         <option value="IT" {% if request.GET.category == 'IT' %}selected{% endif %}>IT & Technology</option>
                         <option value="Healthcare" {% if request.GET.category == 'Healthcare' %}selected{% endif %}>Healthcare</option>
@@ -29,9 +400,12 @@
                         <option value="Retail" {% if request.GET.category == 'Retail' %}selected{% endif %}>Retail & Sales</option>
                     </select>
                 </div>
-                <div>
-                    <label for="provinceSelect" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-dark);">Province</label>
-                    <select id="provinceSelect" name="province" style="width: 100%; padding: 10px; border: 2px solid var(--light-green); border-radius: 6px; cursor: pointer;">
+                <div class="form-group">
+                    <label for="provinceSelect">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 0.4rem; color: var(--primary);"></i>
+                        Province
+                    </label>
+                    <select id="provinceSelect" name="province">
                         <option value="">All Provinces</option>
                         <option value="Quezon" {% if request.GET.province == 'Quezon' %}selected{% endif %}>Quezon</option>
                         <option value="Laguna" {% if request.GET.province == 'Laguna' %}selected{% endif %}>Laguna</option>
@@ -44,86 +418,154 @@
                         <option value="Tarlac" {% if request.GET.province == 'Tarlac' %}selected{% endif %}>Tarlac</option>
                     </select>
                 </div>
-                <div style="display: flex; align-items: flex-end; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary" style="flex: 1; white-space: nowrap;">Filter Results</button>
-                    <a href="{% url 'job_list' %}" class="btn btn-outline" style="flex: 1; text-align: center; white-space: nowrap; text-decoration: none;">Clear Filters</a>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i>
+                        Filter
+                    </button>
+                    <a href="{% url 'job_list' %}" class="btn btn-outline" style="text-decoration: none;">
+                        <i class="fas fa-redo"></i>
+                        Clear
+                    </a>
                 </div>
             </form>
         </div>
 
         <!-- Job Listings -->
         {% if jobs %}
-        <div style="margin-bottom: 2rem;">
-            <p style="color: var(--text-light); margin-bottom: 2rem;"><strong>{{ jobs|length }} job(s) found</strong></p>
-            
-            <div class="job-listings">
-                {% for job in jobs %}
-                <div class="job-card fade-in">
-                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem; margin-bottom: 1rem;">
-                        <div>
-                            <div class="job-title">{{ job.title }}</div>
-                            <div class="job-company">{{ job.employer.business_name }}</div>
-                        </div>
-                        <span class="badge status-active">Active</span>
-                    </div>
-                    
-                    <div class="job-location">📍 {{ job.location }}, {{ job.province }}</div>
-                    
-                    <div style="background: var(--very-light-green); padding: 1rem; border-radius: 6px; margin: 1rem 0;">
-                        <div class="job-description" style="color: var(--text-dark);">{{ job.description }}</div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
-                        <div>
-                            <strong style="color: var(--primary-dark);">Category:</strong><br>
-                            <span style="color: var(--primary);">{{ job.category }}</span>
-                        </div>
-                        <div>
-                            <strong style="color: var(--primary-dark);">Salary:</strong><br>
-                            <span class="job-salary">₱{{ job.salary|default:"Negotiable" }}</span>
-                        </div>
-                        <div>
-                            <strong style="color: var(--primary-dark);">Posted:</strong><br>
-                            <span style="color: var(--text-light);">{{ job.created_at|date:"M d, Y" }}</span>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
-                        <a href="#" onclick="viewJobDetails({{ job.id }})" class="btn btn-primary" style="flex: 1;">View Full Details</a>
-                        {% if user.is_authenticated and user.jobseeker %}
-                            <a href="{% url 'apply_job' job.id %}" class="btn btn-outline" style="flex: 1;">Apply Now</a>
-                        {% else %}
-                            <button class="btn btn-outline" style="flex: 1;" onclick="showLoginAlert()">Apply Now</button>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
+        <div class="results-header">
+            <div class="results-count">
+                <i class="fas fa-briefcase"></i>
+                <span><strong>{{ jobs|length }}</strong> job(s) found</span>
             </div>
         </div>
+        
+        <div class="job-listings">
+            {% for job in jobs %}
+            <div class="job-card fade-in">
+                <div class="job-card-header">
+                    <div class="job-card-content">
+                        <div class="job-title">{{ job.title }}</div>
+                        <div class="job-company">
+                            <i class="fas fa-building"></i>
+                            {{ job.employer.business_name }}
+                        </div>
+                    </div>
+                    <span class="badge status-active">
+                        <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                        Active
+                    </span>
+                </div>
+                
+                <div class="job-location">
+                    <i class="fas fa-map-pin"></i>
+                    <span>{{ job.location }}, {{ job.province }}</span>
+                </div>
+
+                <div class="job-description">
+                    {{ job.description }}
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <div>
+                            <div class="meta-label">Category</div>
+                            <div class="meta-value">{{ job.category }}</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div>
+                            <div class="meta-label">Salary</div>
+                            <div class="meta-value">₱{{ job.salary|default:"Negotiable" }}</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <div class="meta-label">Posted</div>
+                            <div class="meta-value">{{ job.created_at|date:"M d, Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="job-footer">
+                    <a href="#" onclick="viewJobDetails({{ job.id }}); return false;" class="btn btn-primary">
+                        <i class="fas fa-eye"></i>
+                        Details
+                    </a>
+                    {% if user.is_authenticated and user.jobseeker %}
+                        <a href="{% url 'apply_job' job.id %}" class="btn btn-outline">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline" onclick="showLoginAlert(); return false;">
+                            <i class="fas fa-lock"></i>
+                            Apply
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
         {% else %}
-        <div style="background: white; border-radius: 10px; padding: 4rem 2rem; text-align: center; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
-            <h2 style="color: var(--primary-dark); margin-bottom: 1rem;">No Jobs Found</h2>
-            <p style="color: var(--text-light); margin-bottom: 2rem; font-size: 1.1rem;">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2>No Jobs Found</h2>
+            <p>
                 {% if request.GET.q or request.GET.category or request.GET.province %}
                     We couldn't find any jobs matching your filters. Try adjusting your search criteria.
                 {% else %}
                     No jobs are currently available. Please check back soon!
                 {% endif %}
             </p>
-            <a href="{% url 'job_list' %}" class="btn btn-primary">View All Jobs</a>
+            <a href="{% url 'job_list' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-right"></i>
+                View All Jobs
+            </a>
         </div>
         {% endif %}
     </div>
 </section>
 
-<!-- Job Details Modal (placeholder) -->
-<div id="jobDetailsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 2rem;">
-    <div style="background: white; border-radius: 10px; max-width: 600px; margin: 2rem auto; padding: 2rem; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-        <button onclick="closeJobDetails()" style="position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary-dark);">✕</button>
+<!-- Job Details Modal -->
+<div id="jobDetailsModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 1000; padding: 2rem; animation: fadeIn 0.3s ease;">
+    <div style="background: white; border-radius: 12px; max-width: 600px; margin: 2rem auto; padding: 2rem; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideUp 0.3s ease;">
+        <button onclick="closeJobDetails()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary-dark); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s;">
+            <i class="fas fa-times"></i>
+        </button>
         <div id="jobDetailsContent"></div>
     </div>
 </div>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #jobDetailsModal button:hover {
+        background: var(--very-light-green);
+        color: var(--primary);
+    }
+</style>
 
 <script>
     function viewJobDetails(jobId) {
