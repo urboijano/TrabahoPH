@@ -4,49 +4,92 @@
 {% block title %}Login & Sign Up - TrabahoPH{% endblock %}
 
 {% block content %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<style>
+    .g-recaptcha {
+        margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+    }
+</style>
 <style>
     .auth-page {
-        min-height: calc(100vh - 200px);
-        padding: 3rem 2rem;
-        background: linear-gradient(135deg, var(--very-light-green) 0%, #f0fdf4 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .auth-container {
-        max-width: 500px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        perspective: 1000px;
     }
 
     .auth-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        animation: fadeInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .logo-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+        animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .logo-icon i {
+        font-size: 32px;
+        color: white;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
 
     .auth-header h1 {
-        color: var(--primary-dark);
-        font-size: 2.2rem;
+        color: white;
+        font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
+        letter-spacing: -1px;
     }
 
     .auth-header p {
-        color: var(--text-light);
+        color: rgba(255, 255, 255, 0.8);
         font-size: 1rem;
+        font-weight: 500;
     }
 
     .auth-form {
         background: white;
-        border-radius: 16px;
-        padding: 2.5rem;
-        box-shadow: 0 8px 24px rgba(39, 167, 69, 0.1);
-        border: 1px solid var(--border);
-        margin-bottom: 2rem;
-        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        padding: 3.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+        animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        backdrop-filter: blur(10px);
+        transform: translateZ(0);
     }
 
     @keyframes slideUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(40px);
         }
         to {
             opacity: 1;
@@ -54,40 +97,89 @@
         }
     }
 
-    .auth-form h2 {
-        color: var(--primary-dark);
-        margin-bottom: 0.5rem;
-        font-size: 1.6rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .auth-form h2 i {
-        font-size: 1.8rem;
-        color: var(--primary);
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0);
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .auth-form h2 {
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .auth-form .subtitle {
         color: var(--text-light);
         margin-bottom: 2rem;
         font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 1.25rem;
+        width: 100%;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .auth-form input,
     .auth-form select,
     .auth-form textarea {
         width: 100%;
-        padding: 12px 16px;
-        margin-bottom: 1rem;
+        padding: 16px 18px;
         border: 2px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 1rem;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Segoe UI', sans-serif;
         color: var(--text-dark);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
+        background: var(--bg-light);
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .auth-form input::placeholder,
+    .auth-form textarea::placeholder {
+        color: var(--text-light);
+        font-size: 1rem;
+        opacity: 1;
+    }
+
+    .auth-form select {
+        color: var(--text-dark);
     }
 
     .auth-form input:focus,
@@ -95,79 +187,142 @@
     .auth-form textarea:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(39, 167, 69, 0.1);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), inset 0 0 0 1px rgba(99, 102, 241, 0.05);
     }
 
     .auth-form textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
     }
 
-    .auth-form label {
+    .auth-form textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .checkbox-group {
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: var(--text-dark);
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-        cursor: pointer;
-        font-size: 0.95rem;
+        gap: 10px;
+        margin: 1.5rem 0;
     }
 
-    .auth-form label input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        margin: 0;
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
         cursor: pointer;
         accent-color: var(--primary);
     }
 
-    .auth-form label a {
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    .checkbox-group a {
         color: var(--primary);
         text-decoration: none;
         font-weight: 600;
+        transition: color 0.3s ease;
     }
 
-    .auth-form label a:hover {
+    .checkbox-group a:hover {
+        color: var(--primary-dark);
         text-decoration: underline;
     }
 
     .auth-form .btn {
         width: 100%;
-        padding: 14px;
-        margin-top: 1rem;
+        padding: 16px 20px;
+        margin-top: 1.5rem;
         margin-bottom: 0;
-        font-size: 1rem;
+        font-size: 1.05rem;
         font-weight: 600;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
+        cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        min-height: 50px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        font-weight: 600;
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        background: white;
+        color: var(--text-dark);
+        border: 2px solid var(--border);
+        font-weight: 600;
+    }
+
+    .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
     }
 
     .form-toggle {
         text-align: center;
-        padding-top: 2rem;
+        padding-top: 1.75rem;
         border-top: 2px solid var(--border);
-        margin-top: 2rem;
+        margin-top: 1.75rem;
     }
 
     .form-toggle p {
         color: var(--text-dark);
-        margin-bottom: 1rem;
+        margin-bottom: 0;
         font-size: 0.95rem;
         font-weight: 500;
     }
 
-    .toggle-buttons {
-        display: flex;
-        gap: 0.75rem;
-        flex-direction: column;
+    .form-toggle a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
-    .toggle-buttons .btn {
-        margin: 0.5rem 0;
-        padding: 12px 16px;
-        flex: 1;
+    .form-toggle a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
     }
 
     .messages {
@@ -181,6 +336,18 @@
         margin-bottom: 1rem;
         border-left: 4px solid;
         font-weight: 500;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .alert-danger {
@@ -206,40 +373,50 @@
     }
 
     .hidden {
-        display: none;
+        display: none !important;
     }
 
     @media (max-width: 640px) {
         .auth-page {
-            padding: 2rem 1rem;
+            padding: 1rem;
+            min-height: auto;
         }
 
         .auth-form {
-            padding: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
         }
 
         .auth-header h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo-icon svg {
+            width: 32px;
+            height: 32px;
         }
 
         .field-group {
             grid-template-columns: 1fr;
         }
-
-        .toggle-buttons {
-            flex-direction: column;
-        }
-
-        .toggle-buttons .btn {
-            min-width: 100%;
-        }
     }
 </style>
 
 <div class="auth-page">
-    <div class="container auth-container">
+    <div class="auth-container">
         <div class="auth-header">
-            <h1><i class="fas fa-briefcase"></i> TrabahoPH</h1>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <!-- Professional Briefcase Job Icon - Matches Header -->
+                    <i class="fas fa-briefcase"></i>
+                </div>
+            </div>
+            <h1>TrabahoPH</h1>
             <p>Connecting opportunities with talent</p>
         </div>
 
@@ -255,160 +432,40 @@
 
         <!-- Login Form -->
         <div id="loginForm" class="auth-form">
-            <h2><i class="fas fa-sign-in-alt"></i> Welcome Back</h2>
+            <h2>Welcome Back</h2>
             <p class="subtitle">Sign in to your TrabahoPH account</p>
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
-                <input type="text" name="email" placeholder="📧 Email or Username" required>
-                <input type="password" name="password" placeholder="🔐 Password" required>
-                <label>
-                    <input type="checkbox" name="remember_me">
-                    Remember me on this device
-                </label>
-                <button type="submit" class="btn btn-primary">Sign In to Your Account</button>
+                <div class="form-group">
+                    <label for="login-email">Email or Username</label>
+                    <input type="text" id="login-email" name="email" placeholder="Enter your email or username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember-me" name="remember_me">
+                    <label for="remember-me">Remember me on this device</label>
+                </div>
+                <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_SITE_KEY }}"></div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
             <div class="form-toggle">
-                <p>New to TrabahoPH?</p>
-                <div class="toggle-buttons">
-                    <button class="btn btn-outline" onclick="showRegisterSeeker()"><i class="fas fa-user-tie"></i> Register as Job Seeker</button>
-                    <button class="btn btn-outline" onclick="showRegisterEmployer()"><i class="fas fa-building"></i> Register as Employer</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Job Seeker Registration Form -->
-        <div id="registerSeekerForm" class="auth-form hidden">
-            <h2><i class="fas fa-user-tie"></i> Join as Job Seeker</h2>
-            <p class="subtitle">Create your account and start finding opportunities</p>
-            <form method="post" action="{% url 'register_seeker' %}">
-                {% csrf_token %}
-                <div class="field-group full">
-                    <input type="text" name="fullName" placeholder="👤 Full Name" required>
-                </div>
-                <div class="field-group full">
-                    <input type="email" name="email" placeholder="📧 Email Address" required>
-                </div>
-                <div class="field-group full">
-                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
-                </div>
-                <div class="field-group full">
-                    <select name="province" required>
-                        <option value="">📍 Select Your Province</option>
-                        <option value="Quezon">Quezon</option>
-                        <option value="Laguna">Laguna</option>
-                        <option value="Batangas">Batangas</option>
-                        <option value="Cavite">Cavite</option>
-                        <option value="Rizal">Rizal</option>
-                        <option value="Bulacan">Bulacan</option>
-                    </select>
-                </div>
-                <div class="field-group full">
-                    <textarea name="skills" placeholder="💼 Your Skills (comma-separated, e.g., Java, Communication)"></textarea>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
-                </div>
-                <label>
-                    <input type="checkbox" name="terms" required>
-                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
-                </label>
-                <button type="submit" class="btn btn-primary">Create My Account</button>
-            </form>
-            <div class="form-toggle">
-                <p>Already have an account?</p>
-                <div class="toggle-buttons">
-                    <button class="btn btn-secondary" onclick="showLogin()">Sign In</button>
-                    <button class="btn btn-outline" onclick="showRegisterEmployer()">Register as Employer</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Employer Registration Form -->
-        <div id="registerEmployerForm" class="auth-form hidden">
-            <h2><i class="fas fa-building"></i> Join as Employer</h2>
-            <p class="subtitle">Create your account and start posting job opportunities</p>
-            <form method="post" action="{% url 'register_employer' %}">
-                {% csrf_token %}
-                <div class="field-group full">
-                    <input type="text" name="businessName" placeholder="🏢 Business/Organization Name" required>
-                </div>
-                <div class="field-group full">
-                    <input type="text" name="contactPerson" placeholder="👤 Contact Person Name" required>
-                </div>
-                <div class="field-group full">
-                    <input type="email" name="email" placeholder="📧 Email Address" required>
-                </div>
-                <div class="field-group full">
-                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
-                </div>
-                <div class="field-group full">
-                    <select name="province" required>
-                        <option value="">📍 Select Your Province</option>
-                        <option value="Quezon">Quezon</option>
-                        <option value="Laguna">Laguna</option>
-                        <option value="Batangas">Batangas</option>
-                        <option value="Cavite">Cavite</option>
-                        <option value="Rizal">Rizal</option>
-                        <option value="Bulacan">Bulacan</option>
-                    </select>
-                </div>
-                <div class="field-group full">
-                    <textarea name="businessDescription" placeholder="📝 Brief Description of Your Business (optional)"></textarea>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
-                </div>
-                <label>
-                    <input type="checkbox" name="terms" required>
-                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
-                </label>
-                <button type="submit" class="btn btn-primary">Create My Account</button>
-            </form>
-            <div class="form-toggle">
-                <p>Already have an account?</p>
-                <div class="toggle-buttons">
-                    <button class="btn btn-secondary" onclick="showLogin()">Sign In</button>
-                    <button class="btn btn-outline" onclick="showRegisterSeeker()">Register as Job Seeker</button>
-                </div>
+                <p>New to TrabahoPH? <a href="{% url 'register' %}">Register Here</a></p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    function showLogin() {
-        document.getElementById('loginForm').classList.remove('hidden');
-        document.getElementById('registerSeekerForm').classList.add('hidden');
-        document.getElementById('registerEmployerForm').classList.add('hidden');
-    }
-
-    function showRegisterSeeker() {
-        document.getElementById('loginForm').classList.add('hidden');
-        document.getElementById('registerSeekerForm').classList.remove('hidden');
-        document.getElementById('registerEmployerForm').classList.add('hidden');
-    }
-
-    function showRegisterEmployer() {
-        document.getElementById('loginForm').classList.add('hidden');
-        document.getElementById('registerSeekerForm').classList.add('hidden');
-        document.getElementById('registerEmployerForm').classList.remove('hidden');
-    }
-
-    // Validate password confirmation
-    document.addEventListener('submit', function(e) {
-        const form = e.target;
-        const password = form.querySelector('input[name="password"]');
-        const confirmPassword = form.querySelector('input[name="confirmPassword"]');
-
-        if (password && confirmPassword && password.value !== confirmPassword.value) {
+    // Handle reCAPTCHA v2 for login form
+    document.getElementById('loginForm').querySelector('form').addEventListener('submit', function(e) {
+        const recaptchaResponse = grecaptcha.getResponse();
+        
+        if (!recaptchaResponse) {
             e.preventDefault();
-            alert('Passwords do not match. Please try again.');
+            alert('Please verify that you are not a robot.');
         }
     });
 </script>

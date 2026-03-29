@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('register-seeker/', views.RegisterJobSeekerView.as_view(), name='register_seeker'),
     path('register-employer/', views.RegisterEmployerView.as_view(), name='register_employer'),
+    path('verify-email/<uidb64>/<token>/', views.VerifyEmailView.as_view(), name='verify_email'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('jobs/', views.JobListView.as_view(), name='job_list'),
     path('apply/<int:job_id>/', views.ApplyJobView.as_view(), name='apply_job'),

@@ -20,19 +20,19 @@
 
         <div class="stats">
             <div class="stat">
-                <span class="number">1,250+</span>
+                <span class="number">{{ active_jobs_count }}{% if active_jobs_count > 0 %}+{% endif %}</span>
                 <span class="label">Active Jobs</span>
             </div>
             <div class="stat">
-                <span class="number">5,300+</span>
+                <span class="number">{{ job_seekers_count }}{% if job_seekers_count > 0 %}+{% endif %}</span>
                 <span class="label">Job Seekers</span>
             </div>
             <div class="stat">
-                <span class="number">850+</span>
+                <span class="number">{{ employers_count }}{% if employers_count > 0 %}+{% endif %}</span>
                 <span class="label">Employers</span>
             </div>
             <div class="stat">
-                <span class="number">15K+</span>
+                <span class="number">{{ successful_hires_count }}{% if successful_hires_count > 0 %}+{% endif %}</span>
                 <span class="label">Successful Hires</span>
             </div>
         </div>

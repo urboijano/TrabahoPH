@@ -4,49 +4,92 @@
 {% block title %}Create Account - TrabahoPH{% endblock %}
 
 {% block content %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<style>
+    .g-recaptcha {
+        margin: 1rem auto;
+        display: flex;
+        justify-content: center;
+    }
+</style>
 <style>
     .register-page {
-        min-height: calc(100vh - 200px);
-        padding: 3rem 2rem;
-        background: linear-gradient(135deg, var(--very-light-green) 0%, #f0fdf4 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .register-container {
-        max-width: 500px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        perspective: 1000px;
     }
 
     .register-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        animation: fadeInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .logo-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+        animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .logo-icon i {
+        font-size: 32px;
+        color: white;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
 
     .register-header h1 {
-        color: var(--primary-dark);
-        font-size: 2.2rem;
+        color: white;
+        font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
+        letter-spacing: -1px;
     }
 
     .register-header p {
-        color: var(--text-light);
+        color: rgba(255, 255, 255, 0.8);
         font-size: 1rem;
+        font-weight: 500;
     }
 
     .register-form {
         background: white;
-        border-radius: 16px;
-        padding: 2.5rem;
-        box-shadow: 0 8px 24px rgba(39, 167, 69, 0.1);
-        border: 1px solid var(--border);
-        margin-bottom: 2rem;
-        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        padding: 2.75rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+        animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        backdrop-filter: blur(10px);
+        transform: translateZ(0);
     }
 
     @keyframes slideUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(40px);
         }
         to {
             opacity: 1;
@@ -54,40 +97,89 @@
         }
     }
 
-    .register-form h2 {
-        color: var(--primary-dark);
-        margin-bottom: 0.5rem;
-        font-size: 1.6rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .register-form h2 i {
-        font-size: 1.8rem;
-        color: var(--primary);
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0);
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .register-form h2 {
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .register-form .subtitle {
         color: var(--text-light);
         margin-bottom: 2rem;
         font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 1.25rem;
+        width: 100%;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .register-form input,
     .register-form select,
     .register-form textarea {
         width: 100%;
-        padding: 12px 16px;
-        margin-bottom: 1rem;
+        padding: 14px 16px;
         border: 2px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 1rem;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Segoe UI', sans-serif;
         color: var(--text-dark);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: white;
+        background: var(--bg-light);
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .register-form input::placeholder,
+    .register-form textarea::placeholder {
+        color: var(--text-light);
+        font-size: 1rem;
+        opacity: 1;
+    }
+
+    .register-form select {
+        color: var(--text-dark);
     }
 
     .register-form input:focus,
@@ -95,90 +187,174 @@
     .register-form textarea:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(39, 167, 69, 0.1);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), inset 0 0 0 1px rgba(99, 102, 241, 0.05);
     }
 
     .register-form textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
     }
 
-    .register-form label {
+    .phone-input-wrapper {
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: var(--text-dark);
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-        cursor: pointer;
-        font-size: 0.95rem;
+        position: relative;
+        width: 100%;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-light);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-sizing: border-box;
     }
 
-    .register-form label input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        margin: 0;
+    .phone-input-wrapper:focus-within {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), inset 0 0 0 1px rgba(99, 102, 241, 0.05);
+    }
+
+    .phone-prefix {
+        padding: 14px 12px;
+        padding-right: 0;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1rem;
+        user-select: none;
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+
+    .phone-input-wrapper input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 14px 12px;
+        padding-left: 4px;
+        font-size: 1rem;
+        font-family: 'Segoe UI', sans-serif;
+        color: var(--text-dark);
+        outline: none;
+        box-shadow: none !important;
+    }
+
+    .phone-input-wrapper input::placeholder {
+        color: var(--text-light);
+        opacity: 1;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 1.5rem 0;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
         cursor: pointer;
         accent-color: var(--primary);
+        flex-shrink: 0;
     }
 
-    .register-form label a {
+    .checkbox-group label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    .checkbox-group a {
         color: var(--primary);
         text-decoration: none;
         font-weight: 600;
+        transition: color 0.3s ease;
+        margin-left: 0.25rem;
     }
 
-    .register-form label a:hover {
+    .checkbox-group a:hover {
+        color: var(--primary-dark);
         text-decoration: underline;
     }
 
     .register-form .btn {
         width: 100%;
-        padding: 14px;
-        margin-top: 1rem;
+        padding: 14px 20px;
+        margin-top: 1.5rem;
         margin-bottom: 0;
         font-size: 1rem;
         font-weight: 600;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
+        cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
     }
 
     .form-tabs {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        margin-top: 0;
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .form-tab-button {
         padding: 1.2rem;
-        border: 3px solid var(--border);
+        border: 2px solid var(--border);
         background: white;
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 700;
         color: var(--text-light);
-        font-size: 1rem;
+        font-size: 0.95rem;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .form-tab-button:hover {
         border-color: var(--primary);
         color: var(--primary);
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
     }
 
     .form-tab-button.active {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         border-color: var(--primary-dark);
         color: white;
-        box-shadow: 0 8px 20px rgba(39, 167, 69, 0.3);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     }
 
     .form-tab-button i {
@@ -187,34 +363,41 @@
 
     .form-footer {
         text-align: center;
-        padding-top: 2rem;
+        padding-top: 1.75rem;
         border-top: 2px solid var(--border);
-        margin-top: 2rem;
+        margin-top: 1.75rem;
     }
 
     .form-footer p {
         color: var(--text-dark);
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         font-size: 0.95rem;
         font-weight: 500;
     }
 
     .footer-links {
         display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
+        gap: 0.5rem;
         justify-content: center;
-        flex-direction: column;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
     .footer-links a {
         color: var(--primary);
         text-decoration: none;
         font-weight: 600;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
     }
 
     .footer-links a:hover {
+        color: var(--primary-dark);
         text-decoration: underline;
+    }
+
+    .footer-links .separator {
+        color: var(--border);
     }
 
     .messages {
@@ -228,6 +411,18 @@
         margin-bottom: 1rem;
         border-left: 4px solid;
         font-weight: 500;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .alert-danger {
@@ -253,20 +448,31 @@
     }
 
     .hidden {
-        display: none;
+        display: none !important;
     }
 
     @media (max-width: 640px) {
         .register-page {
-            padding: 2rem 1rem;
+            padding: 1rem;
+            min-height: auto;
         }
 
         .register-form {
-            padding: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
         }
 
         .register-header h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo-icon i {
+            font-size: 28px;
         }
 
         .field-group {
@@ -279,14 +485,214 @@
 
         .footer-links {
             flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-links .separator {
+            display: none;
+        }
+    }
+
+    /* Password Strength Meter Styles */
+    .password-strength-container {
+        margin-top: 0.75rem;
+        margin-bottom: 1rem;
+        visibility: hidden;
+        height: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .password-strength-meter {
+        width: 100%;
+        height: 6px;
+        background: var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 10px;
+        transition: width 0.3s ease, background-color 0.3s ease;
+        background-color: transparent;
+    }
+
+    .strength-bar.empty {
+        width: 0%;
+        background-color: transparent;
+    }
+
+    .strength-bar.weak {
+        width: 25%;
+        background-color: #ef4444;
+    }
+
+    .strength-bar.fair {
+        width: 50%;
+        background-color: #f59e0b;
+    }
+
+    .strength-bar.good {
+        width: 75%;
+        background-color: #3b82f6;
+    }
+
+    .strength-bar.strong {
+        width: 100%;
+        background-color: #10b981;
+    }
+
+    .password-strength-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .password-strength-text.weak {
+        color: #ef4444;
+    }
+
+    .password-strength-text.fair {
+        color: #f59e0b;
+    }
+
+    .password-strength-text.good {
+        color: #3b82f6;
+    }
+
+    .password-strength-text.strong {
+        color: #10b981;
+    }
+
+    /* Info Icon and Tooltip Styles */
+    .password-info-icon {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: help;
+    }
+
+    .password-info-icon i {
+        color: var(--primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .password-info-icon:hover i {
+        color: var(--primary-dark);
+        transform: scale(1.15);
+    }
+
+    .password-tooltip {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        background: var(--primary-dark);
+        color: white;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(27, 92, 46, 0.3);
+        animation: tooltipFadeIn 0.3s ease;
+        pointer-events: none;
+        margin-bottom: 8px;
+    }
+
+    .password-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--primary-dark);
+    }
+
+    .password-info-icon:hover .password-tooltip {
+        display: block;
+        white-space: normal;
+        width: max-content;
+        max-width: 280px;
+    }
+
+    @keyframes tooltipFadeIn {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+    }
+
+    .password-tooltip ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .password-tooltip li {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.95);
+        padding: 0.3rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .password-tooltip li i {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.3rem;
+        min-width: 0.5rem;
+    }
+
+    .password-tooltip li.met i {
+        color: #10b981;
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+        .password-tooltip {
+            position: fixed;
+            bottom: auto;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            white-space: normal;
+            max-width: 90vw;
+            width: calc(90vw - 20px);
+        }
+
+        .password-tooltip::after {
+            display: none;
+        }
+
+        .password-info-icon:hover .password-tooltip {
+            white-space: normal;
+            width: calc(90vw - 20px);
         }
     }
 </style>
 
 <div class="register-page">
-    <div class="container register-container">
+    <div class="register-container">
         <div class="register-header">
-            <h1><i class="fas fa-briefcase"></i> TrabahoPH</h1>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <!-- Professional Briefcase Job Icon - Matches Header -->
+                    <i class="fas fa-briefcase"></i>
+                </div>
+            </div>
+            <h1>TrabahoPH</h1>
             <p>Create your account to start your journey</p>
         </div>
 
@@ -312,108 +718,211 @@
 
         <!-- Job Seeker Registration Form -->
         <div id="jobSeekerForm" class="register-form">
-            <h2><i class="fas fa-user-tie"></i> Join as Job Seeker</h2>
+            <h2>Join as Job Seeker</h2>
             <p class="subtitle">Create your account to find amazing job opportunities</p>
             <form method="post" action="{% url 'register_seeker' %}">
                 {% csrf_token %}
                 <div class="field-group full">
-                    <input type="text" name="fullName" placeholder="👤 Full Name" required>
+                    <div class="form-group">
+                        <label for="seeker-fullName">Full Name</label>
+                        <input type="text" id="seeker-fullName" name="fullName" placeholder="Your full name" pattern="[a-zA-Z.\s]+" title="Only letters, spaces, and periods are allowed" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <div class="form-group">
+                        <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <label for="seeker-email" style="margin-top: 0.15rem;">Email Address</label>
+                            <div class="password-info-icon" data-info-id="seeker-email-tooltip" style="margin-top: 0.15rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="password-tooltip" id="seeker-email-tooltip">
+                                    <p style="font-size: 0.85rem; color: white; margin: 0 0 0.5rem 0; font-weight: 600;">Email format rules:</p>
+                                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem;">
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-check" style="color: #4ade80; margin-right: 0.4rem;"></i>Letters, numbers & periods allowed</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-check" style="color: #4ade80; margin-right: 0.4rem;"></i>6-30 characters before @</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>Cannot start with period</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>Cannot end with period</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>No consecutive periods (..)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="email" id="seeker-email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seeker-phone">Phone Number</label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+63</span>
+                            <input type="tel" id="seeker-phone" name="phone" placeholder="9XX XXX XXXX" maxlength="10" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="field-group full">
-                    <input type="email" name="email" placeholder="📧 Email Address" required>
+                    <div class="form-group">
+                        <label for="seeker-province">Province</label>
+                        <select id="seeker-province" name="province" required>
+                            <option value="">Select Your Province</option>
+                            <option value="Quezon">Quezon</option>
+                            <option value="Laguna">Laguna</option>
+                            <option value="Batangas">Batangas</option>
+                            <option value="Cavite">Cavite</option>
+                            <option value="Rizal">Rizal</option>
+                            <option value="Bulacan">Bulacan</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="field-group full">
-                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
+                <div class="field-group">
+                    <div class="form-group">
+                        <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <label for="seeker-password" style="margin-top: 0.15rem;">Password</label>
+                            <div class="password-info-icon" data-info-id="seeker-password-tooltip" style="margin-top: 0.15rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="password-tooltip" id="seeker-password-tooltip">
+                                    <p style="font-size: 0.85rem; color: white; margin: 0 0 0.5rem 0; font-weight: 600;">Password must contain:</p>
+                                    <ul id="seeker-password-requirements" style="list-style: none; padding: 0; margin: 0;">
+                                        <li class="requirement" data-requirement="length"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>At least 8 characters</span></li>
+                                        <li class="requirement" data-requirement="uppercase"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Uppercase letter (A-Z)</span></li>
+                                        <li class="requirement" data-requirement="lowercase"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Lowercase letter (a-z)</span></li>
+                                        <li class="requirement" data-requirement="number"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Number (0-9)</span></li>
+                                        <li class="requirement" data-requirement="special"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Special character (!@#$%^&*)</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="password" id="seeker-password" name="password" placeholder="Create a strong password" minlength="8" required>
+                        <div class="password-strength-container">
+                            <div class="password-strength-meter" id="seeker-password-strength-meter">
+                                <div class="strength-bar" id="seeker-strength-bar"></div>
+                            </div>
+                            <div class="password-strength-text">
+                                <span id="seeker-strength-text">Password strength: </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="seeker-confirmPassword">Confirm Password</label>
+                        <input type="password" id="seeker-confirmPassword" name="confirmPassword" placeholder="Confirm your password" minlength="6" required>
+                    </div>
                 </div>
-                <div class="field-group full">
-                    <select name="province" required>
-                        <option value="">📍 Select Your Province</option>
-                        <option value="Quezon">Quezon</option>
-                        <option value="Laguna">Laguna</option>
-                        <option value="Batangas">Batangas</option>
-                        <option value="Cavite">Cavite</option>
-                        <option value="Rizal">Rizal</option>
-                        <option value="Bulacan">Bulacan</option>
-                    </select>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="seeker-terms" name="terms" required>
+                    <label for="seeker-terms">I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a></label>
                 </div>
-                <div class="field-group full">
-                    <textarea name="skills" placeholder="💼 Your Skills (comma-separated, e.g., Java, Communication)"></textarea>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
-                </div>
-                <label>
-                    <input type="checkbox" name="terms" required>
-                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
-                </label>
+                <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_SITE_KEY }}"></div>
                 <button type="submit" class="btn btn-primary">Create My Account</button>
             </form>
 
             <div class="form-footer">
-                <p>Already have an account?</p>
-                <div class="footer-links">
-                    <a href="{% url 'auth' %}">Sign In Here</a>
-                    <span style="text-align: center; color: #ccc;">•</span>
-                    <a href="#" onclick="showEmployerForm(); return false;">Register as Employer Instead</a>
-                </div>
+                <p>Already have an account? <a href="{% url 'auth' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign In Here</a></p>
             </div>
         </div>
 
         <!-- Employer Registration Form -->
         <div id="employerForm" class="register-form hidden">
-            <h2><i class="fas fa-building"></i> Join as Employer</h2>
+            <h2>Join as Employer</h2>
             <p class="subtitle">Create your account and start posting job opportunities</p>
             <form method="post" action="{% url 'register_employer' %}">
                 {% csrf_token %}
                 <div class="field-group full">
-                    <input type="text" name="businessName" placeholder="🏢 Business/Organization Name" required>
+                    <div class="form-group">
+                        <label for="employer-businessName">Business/Organization Name</label>
+                        <input type="text" id="employer-businessName" name="businessName" placeholder="Your business name" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <div class="form-group">
+                        <label for="employer-contactPerson">Contact Person Name</label>
+                        <input type="text" id="employer-contactPerson" name="contactPerson" placeholder="Name of primary contact" pattern="[a-zA-Z.\s]+" title="Only letters, spaces, and periods are allowed" required>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <label for="employer-email" style="margin-top: 0.15rem;">Email Address</label>
+                            <div class="password-info-icon" data-info-id="employer-email-tooltip" style="margin-top: 0.15rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="password-tooltip" id="employer-email-tooltip">
+                                    <p style="font-size: 0.85rem; color: white; margin: 0 0 0.5rem 0; font-weight: 600;">Email format rules:</p>
+                                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem;">
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-check" style="color: #4ade80; margin-right: 0.4rem;"></i>Letters, numbers & periods allowed</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-check" style="color: #4ade80; margin-right: 0.4rem;"></i>6-30 characters before @</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>Cannot start with period</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>Cannot end with period</li>
+                                        <li style="color: white; margin: 0.3rem 0;"><i class="fas fa-times" style="color: #ef4444; margin-right: 0.4rem;"></i>No consecutive periods (..)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="email" id="employer-email" name="email" placeholder="your@company.com" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <div class="form-group">
+                        <label for="employer-phone">Phone Number</label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+63</span>
+                            <input type="tel" id="employer-phone" name="phone" placeholder="9XX XXX XXXX" maxlength="10" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="employer-province">Province</label>
+                        <select id="employer-province" name="province" required>
+                            <option value="">Select Your Province</option>
+                            <option value="Quezon">Quezon</option>
+                            <option value="Laguna">Laguna</option>
+                            <option value="Batangas">Batangas</option>
+                            <option value="Cavite">Cavite</option>
+                            <option value="Rizal">Rizal</option>
+                            <option value="Bulacan">Bulacan</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="field-group full">
-                    <input type="text" name="contactPerson" placeholder="👤 Contact Person Name" required>
+                    <div class="form-group">
+                        <label for="employer-businessDescription">Business Description</label>
+                        <textarea id="employer-businessDescription" name="businessDescription" placeholder="Brief description of your business (optional)"></textarea>
+                    </div>
                 </div>
-                <div class="field-group full">
-                    <input type="email" name="email" placeholder="📧 Email Address" required>
+                <div class="field-group">
+                    <div class="form-group">
+                        <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <label for="employer-password" style="margin-top: 0.15rem;">Password</label>
+                            <div class="password-info-icon" data-info-id="employer-password-tooltip" style="margin-top: 0.15rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="password-tooltip" id="employer-password-tooltip">
+                                    <p style="font-size: 0.85rem; color: white; margin: 0 0 0.5rem 0; font-weight: 600;">Password must contain:</p>
+                                    <ul id="employer-password-requirements" style="list-style: none; padding: 0; margin: 0;">
+                                        <li class="requirement" data-requirement="length"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>At least 8 characters</span></li>
+                                        <li class="requirement" data-requirement="uppercase"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Uppercase letter (A-Z)</span></li>
+                                        <li class="requirement" data-requirement="lowercase"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Lowercase letter (a-z)</span></li>
+                                        <li class="requirement" data-requirement="number"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Number (0-9)</span></li>
+                                        <li class="requirement" data-requirement="special"><i class="fas fa-circle" style="font-size: 0.3rem; margin-right: 0.5rem;"></i><span>Special character (!@#$%^&*)</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="password" id="employer-password" name="password" placeholder="Create a strong password" minlength="8" required>
+                        <div class="password-strength-container">
+                            <div class="password-strength-meter" id="employer-password-strength-meter">
+                                <div class="strength-bar" id="employer-strength-bar"></div>
+                            </div>
+                            <div class="password-strength-text">
+                                <span id="employer-strength-text">Password strength: </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="employer-confirmPassword">Confirm Password</label>
+                        <input type="password" id="employer-confirmPassword" name="confirmPassword" placeholder="Confirm your password" minlength="6" required>
+                    </div>
                 </div>
-                <div class="field-group full">
-                    <input type="tel" name="phone" placeholder="📱 Phone Number" required>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="employer-terms" name="terms" required>
+                    <label for="employer-terms">I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a></label>
                 </div>
-                <div class="field-group full">
-                    <select name="province" required>
-                        <option value="">📍 Select Your Province</option>
-                        <option value="Quezon">Quezon</option>
-                        <option value="Laguna">Laguna</option>
-                        <option value="Batangas">Batangas</option>
-                        <option value="Cavite">Cavite</option>
-                        <option value="Rizal">Rizal</option>
-                        <option value="Bulacan">Bulacan</option>
-                    </select>
-                </div>
-                <div class="field-group full">
-                    <textarea name="businessDescription" placeholder="📝 Brief Description of Your Business (optional)"></textarea>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="password" placeholder="🔐 Password (minimum 6 characters)" minlength="6" required>
-                </div>
-                <div class="field-group full">
-                    <input type="password" name="confirmPassword" placeholder="🔐 Confirm Password" minlength="6" required>
-                </div>
-                <label>
-                    <input type="checkbox" name="terms" required>
-                    I agree to the <a href="#" onclick="openModal('termsModal'); return false;">Terms of Service</a> and <a href="#" onclick="openModal('privacyModal'); return false;">Privacy Policy</a>
-                </label>
+                <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_SITE_KEY }}"></div>
                 <button type="submit" class="btn btn-primary">Create My Account</button>
             </form>
 
             <div class="form-footer">
-                <p>Already have an account?</p>
-                <div class="footer-links">
-                    <a href="{% url 'auth' %}">Sign In Here</a>
-                    <span style="text-align: center; color: #ccc;">•</span>
-                    <a href="#" onclick="showJobSeekerForm(); return false;">Register as Job Seeker Instead</a>
-                </div>
+                <p>Already have an account? <a href="{% url 'auth' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign In Here</a></p>
             </div>
         </div>
     </div>
@@ -425,6 +934,7 @@
         document.getElementById('employerForm').classList.add('hidden');
         document.querySelectorAll('.form-tab-button')[0].classList.add('active');
         document.querySelectorAll('.form-tab-button')[1].classList.remove('active');
+        grecaptcha.reset();
     }
 
     function showEmployerForm() {
@@ -432,17 +942,340 @@
         document.getElementById('employerForm').classList.remove('hidden');
         document.querySelectorAll('.form-tab-button')[0].classList.remove('active');
         document.querySelectorAll('.form-tab-button')[1].classList.add('active');
+        grecaptcha.reset();
     }
 
-    // Validate password confirmation
+    // Real-time validation for name fields (only letters, spaces, and periods)
+    function validateNameInput(input) {
+        // Remove any character that's not a letter, space, or period
+        input.value = input.value.replace(/[^a-zA-Z\s.]/g, '');
+    }
+
+    // Real-time validation for email fields (Gmail-style: letters, numbers, periods only)
+    function validateEmailInput(input) {
+        let value = input.value;
+        const atIndex = value.indexOf('@');
+        
+        if (atIndex === -1) {
+            // No @ yet, validate the whole input as username part
+            let username = value;
+            
+            // Remove invalid characters (keep only letters, numbers, and periods)
+            username = username.replace(/[^a-zA-Z0-9.]/g, '');
+            
+            // Prevent starting with period
+            if (username.startsWith('.')) {
+                username = username.substring(1);
+            }
+            
+            // Prevent ending with period
+            while (username.endsWith('.')) {
+                username = username.slice(0, -1);
+            }
+            
+            // Prevent consecutive periods
+            username = username.replace(/\.+/g, '.');
+            
+            // Limit to 30 characters
+            username = username.substring(0, 30);
+            
+            input.value = username;
+        } else {
+            // Has @, validate username part only
+            let username = value.substring(0, atIndex);
+            let domain = value.substring(atIndex);
+            
+            // Remove invalid characters from username (keep only letters, numbers, and periods)
+            username = username.replace(/[^a-zA-Z0-9.]/g, '');
+            
+            // Prevent starting with period
+            if (username.startsWith('.')) {
+                username = username.substring(1);
+            }
+            
+            // Prevent ending with period (before @)
+            while (username.endsWith('.')) {
+                username = username.slice(0, -1);
+            }
+            
+            // Prevent consecutive periods
+            username = username.replace(/\.+/g, '.');
+            
+            // Limit username to 30 characters
+            username = username.substring(0, 30);
+            
+            input.value = username + domain;
+        }
+    }
+
+    // Attach validation to Full Name and Contact Person fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const fullNameField = document.getElementById('seeker-fullName');
+        const contactPersonField = document.getElementById('employer-contactPerson');
+        const seekerEmailField = document.getElementById('seeker-email');
+        const employerEmailField = document.getElementById('employer-email');
+        
+        if (fullNameField) {
+            fullNameField.addEventListener('input', function() {
+                validateNameInput(this);
+            });
+        }
+        
+        if (contactPersonField) {
+            contactPersonField.addEventListener('input', function() {
+                validateNameInput(this);
+            });
+        }
+
+        // Attach email validation
+        if (seekerEmailField) {
+            seekerEmailField.addEventListener('input', function() {
+                validateEmailInput(this);
+            });
+        }
+
+        if (employerEmailField) {
+            employerEmailField.addEventListener('input', function() {
+                validateEmailInput(this);
+            });
+        }
+
+        // Add password strength checker to both password fields
+        const seekerPasswordField = document.getElementById('seeker-password');
+        const employerPasswordField = document.getElementById('employer-password');
+
+        if (seekerPasswordField) {
+            seekerPasswordField.addEventListener('input', function() {
+                checkPasswordStrength(this, 'seeker');
+            });
+        }
+
+        if (employerPasswordField) {
+            employerPasswordField.addEventListener('input', function() {
+                checkPasswordStrength(this, 'employer');
+            });
+        }
+    });
+
+    // Password Strength Checker
+    function checkPasswordStrength(input, userType) {
+        const password = input.value;
+        const strengthBar = document.getElementById(`${userType}-strength-bar`);
+        const strengthText = document.getElementById(`${userType}-strength-text`);
+        const requirementsUl = document.getElementById(`${userType}-password-requirements`);
+
+        if (!strengthBar || !strengthText || !requirementsUl) return;
+
+        // Define requirements
+        const requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
+
+        // Update requirement indicators in both list and tooltip
+        requirementsUl.querySelectorAll('.requirement').forEach(el => {
+            const req = el.getAttribute('data-requirement');
+            if (requirements[req]) {
+                el.classList.add('met');
+            } else {
+                el.classList.remove('met');
+            }
+        });
+
+        // Calculate strength
+        const metRequirements = Object.values(requirements).filter(Boolean).length;
+        let strength = 'weak';
+        let strengthLabel = 'Weak';
+
+        if (password.length === 0) {
+            strengthLabel = '';
+            strengthBar.className = 'strength-bar empty';
+            strengthText.className = 'password-strength-text';
+            strengthText.innerHTML = '';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.visibility = 'hidden';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.height = '0';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.margin = '0';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.padding = '0';
+        } else if (password.length < 8) {
+            strength = 'weak';
+            strengthLabel = 'Too Short (min 8 characters)';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.visibility = 'visible';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.height = 'auto';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.margin = '0.75rem 0 1rem 0';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.padding = '0';
+        } else if (metRequirements <= 2) {
+            strength = 'weak';
+            strengthLabel = 'Weak';
+        } else if (metRequirements === 3) {
+            strength = 'fair';
+            strengthLabel = 'Fair';
+        } else if (metRequirements === 4) {
+            strength = 'good';
+            strengthLabel = 'Good';
+        } else if (metRequirements === 5 && password.length >= 12) {
+            strength = 'strong';
+            strengthLabel = 'Strong';
+        } else if (metRequirements === 5) {
+            strength = 'good';
+            strengthLabel = 'Good';
+        }
+
+        // Update UI
+        strengthBar.className = `strength-bar ${strength}`;
+        strengthText.className = `password-strength-text ${strength}`;
+        strengthText.innerHTML = `Password strength: <strong>${strengthLabel}</strong>`;
+        
+        // Ensure meter is visible when password has content
+        if (password.length > 0) {
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.visibility = 'visible';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.height = 'auto';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.margin = '0.75rem 0 1rem 0';
+            document.getElementById(`${userType}-password-strength-meter`).parentElement.style.padding = '0';
+        }
+    }
+
+    // Phone Input Handler - Ensure only digits and enforce +63 prefix
+    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            // Remove any non-digit characters
+            let value = this.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits (for phone numbers after +63)
+            if (value.length > 10) {
+                value = value.slice(0, 10);
+            }
+            
+            this.value = value;
+        });
+
+        input.addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter
+            if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                // Allow: Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A
+                ([65, 67, 86, 88].indexOf(e.keyCode) !== -1 && (e.ctrlKey === true || e.metaKey === true))) {
+                return;
+            }
+            // Ensure only numbers are typed
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Handle form submission with reCAPTCHA v2
     document.addEventListener('submit', function(e) {
         const form = e.target;
+        
+        // Validate email format
+        const emailInputs = form.querySelectorAll('input[type="email"]');
+        emailInputs.forEach(emailInput => {
+            if (emailInput.value && emailInput.value.trim() !== '') {
+                const email = emailInput.value.trim();
+                const atIndex = email.indexOf('@');
+                
+                if (atIndex !== -1) {
+                    const username = email.substring(0, atIndex);
+                    
+                    // Check if username is between 6-30 characters
+                    if (username.length < 6) {
+                        e.preventDefault();
+                        alert('Email username must be at least 6 characters long before the @ symbol.');
+                        emailInput.focus();
+                        return;
+                    }
+                    
+                    if (username.length > 30) {
+                        e.preventDefault();
+                        alert('Email username must not exceed 30 characters before the @ symbol.');
+                        emailInput.focus();
+                        return;
+                    }
+                    
+                    // Check for invalid characters
+                    if (!/^[a-zA-Z0-9.]+$/.test(username)) {
+                        e.preventDefault();
+                        alert('Email username can only contain letters, numbers, and periods.');
+                        emailInput.focus();
+                        return;
+                    }
+                    
+                    // Check if starts or ends with period
+                    if (username.startsWith('.') || username.endsWith('.')) {
+                        e.preventDefault();
+                        alert('Email username cannot start or end with a period.');
+                        emailInput.focus();
+                        return;
+                    }
+                    
+                    // Check for consecutive periods
+                    if (username.includes('..')) {
+                        e.preventDefault();
+                        alert('Email username cannot contain consecutive periods.');
+                        emailInput.focus();
+                        return;
+                    }
+                }
+            }
+        });
+        
+        // Add +63 prefix to phone numbers if not already present
+        const phoneInputs = form.querySelectorAll('input[type="tel"]');
+        phoneInputs.forEach(input => {
+            if (input.value && input.value.trim() !== '') {
+                if (!input.value.startsWith('+63')) {
+                    input.value = '+63' + input.value;
+                }
+            }
+        });
+
         const password = form.querySelector('input[name="password"]');
         const confirmPassword = form.querySelector('input[name="confirmPassword"]');
 
+        // Validate password match
         if (password && confirmPassword && password.value !== confirmPassword.value) {
             e.preventDefault();
             alert('Passwords do not match. Please try again.');
+            return;
+        }
+
+        // Validate password strength
+        if (password && password.value.length > 0) {
+            const pwd = password.value;
+            const requirements = {
+                length: pwd.length >= 8,
+                uppercase: /[A-Z]/.test(pwd),
+                lowercase: /[a-z]/.test(pwd),
+                number: /[0-9]/.test(pwd),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd)
+            };
+
+            const metRequirements = Object.values(requirements).filter(Boolean).length;
+
+            if (pwd.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return;
+            }
+
+            if (metRequirements < 3) {
+                e.preventDefault();
+                alert('Password is too weak. It must contain:\n- Uppercase letters (A-Z)\n- Lowercase letters (a-z)\n- Numbers (0-9)\n\nAt least 3 of these requirements are needed.');
+                return;
+            }
+        }
+
+        // Check if this is a registration form
+        const grecaptchaElement = form.querySelector('.g-recaptcha');
+        if (grecaptchaElement) {
+            const recaptchaResponse = grecaptcha.getResponse();
+            if (!recaptchaResponse) {
+                e.preventDefault();
+                alert('Please verify that you are not a robot.');
+            }
         }
     });
 </script>
