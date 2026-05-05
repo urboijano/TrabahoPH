@@ -6,6 +6,8 @@ from .models import Job, JobSeeker, Employer, Application
 from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import timedelta
+from .views import is_profile_complete, get_ai_recommended_jobs
+from django.contrib import messages
 
 def is_admin(user):
     return user.is_staff or user.is_superuser
@@ -123,12 +125,19 @@ class SeekerDashboardView(View):
         
         recent_applications = Application.objects.filter(job_seeker=job_seeker).select_related('job').order_by('-applied_at')[:5]
         
-        recommended_jobs = Job.objects.filter(
-            is_active=True,
-            province=job_seeker.province
+        # Get all active jobs not yet applied by user
+        all_available_jobs = Job.objects.filter(
+            is_active=True
         ).exclude(
             applications__job_seeker=job_seeker
-        )[:5]
+        ).select_related('employer')
+        
+        # Try to get AI-recommended jobs based on skills
+        if job_seeker.skills:
+            recommended_jobs = get_ai_recommended_jobs(job_seeker, all_available_jobs, limit=5)
+        else:
+            # Fallback to location-based recommendations if no skills
+            recommended_jobs = list(all_available_jobs[:5])
         
         context = {
             'job_seeker': job_seeker,
@@ -138,6 +147,7 @@ class SeekerDashboardView(View):
             'rejected_count': rejected_apps,
             'recent_applications': recent_applications,
             'recommended_jobs': recommended_jobs,
+            'profile_complete': is_profile_complete(job_seeker),
         }
         
         return render(request, 'seeker_dashboard.html', context)
@@ -177,3 +187,102 @@ class EmployerDashboardView(View):
         }
         
         return render(request, 'employer_dashboard.html', context)
+
+# ======================== EMPLOYER POST JOB ========================
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(is_employer), name='dispatch')
+class PostJobView(View):
+    def get(self, request):
+        try:
+            employer = Employer.objects.get(user=request.user)
+        except Employer.DoesNotExist:
+            return redirect('index')
+        
+        categories = Job.CATEGORY_CHOICES
+        
+        context = {
+            'employer': employer,
+            'categories': categories,
+        }
+        
+        return render(request, 'post_job.html', context)
+    
+    def post(self, request):
+        try:
+            employer = Employer.objects.get(user=request.user)
+        except Employer.DoesNotExist:
+            return redirect('index')
+        
+        # Get form data
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        category = request.POST.get('category', '').strip()
+        location = request.POST.get('location', '').strip()
+        barangay = request.POST.get('barangay', '').strip()
+        salary = request.POST.get('salary', '').strip()
+        
+        # Validation
+        errors = []
+        
+        if not title:
+            errors.append('Job title is required.')
+        elif len(title) < 3:
+            errors.append('Job title must be at least 3 characters.')
+        elif len(title) > 200:
+            errors.append('Job title cannot exceed 200 characters.')
+        
+        if not description:
+            errors.append('Job description is required.')
+        elif len(description) < 20:
+            errors.append('Job description must be at least 20 characters.')
+        
+        if not category:
+            errors.append('Job category is required.')
+        
+        if not location:
+            errors.append('Exact location is required.')
+        
+        if not barangay:
+            errors.append('Barangay is required.')
+        
+        if not salary:
+            errors.append('Salary information is required.')
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            context = {
+                'employer': employer,
+                'categories': Job.CATEGORY_CHOICES,
+                'form_data': request.POST,
+            }
+            return render(request, 'post_job.html', context)
+        
+        # Create job - use barangay for location fields
+        try:
+            job = Job.objects.create(
+                title=title,
+                employer=employer,
+                description=description,
+                category=category,
+                location=location,
+                province=employer.province,
+                municipality=employer.municipality,
+                barangay=barangay,
+                salary=salary,
+                is_active=True,
+                is_approved=False  # Jobs require admin approval
+            )
+            
+            messages.success(request, 'Job posted successfully! Your job listing is pending admin approval.')
+            return redirect('employer_dashboard')
+        
+        except Exception as e:
+            messages.error(request, f'An error occurred while posting the job: {str(e)}')
+            context = {
+                'employer': employer,
+                'categories': Job.CATEGORY_CHOICES,
+                'form_data': request.POST,
+            }
+            return render(request, 'post_job.html', context)

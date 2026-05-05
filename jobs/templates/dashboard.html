@@ -288,76 +288,95 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.25rem;
-        background: linear-gradient(to right, var(--green-50), var(--gray-50));
-        border-radius: 10px;
-        border-left: 3px solid var(--green-500);
+        padding: 1rem 1.25rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid var(--green-200);
         transition: all 0.3s ease;
     }
 
     .category-item:hover {
-        background: linear-gradient(to right, var(--green-100), var(--gray-100));
-        transform: translateX(4px);
+        background: var(--green-50);
+        border-color: var(--green-500);
+        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.1);
     }
 
     .category-item span:first-child {
         color: var(--gray-800);
         font-weight: 600;
+        font-size: 0.95rem;
     }
 
     .badge {
-        background: linear-gradient(135deg, var(--green-500), var(--green-600));
+        background: var(--green-500);
         color: white;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.9rem;
         border-radius: 20px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 700;
-        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
     }
 
-    /* Province Grid */
+    /* Province Grid - Horizontal Scroll */
     .province-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        display: flex;
         gap: 1rem;
-        min-height: 200px;
-        align-items: center;
-        justify-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        padding: 0.5rem 0;
+        scroll-snap-type: x mandatory;
+    }
+
+    .province-grid::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .province-grid::-webkit-scrollbar-track {
+        background: var(--gray-200);
+        border-radius: 10px;
+    }
+
+    .province-grid::-webkit-scrollbar-thumb {
+        background: var(--green-500);
+        border-radius: 10px;
     }
 
     .province-grid > p {
-        grid-column: 1 / -1;
         width: 100%;
     }
 
     .province-card {
-        background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 12px;
+        background: white;
+        color: var(--gray-800);
+        padding: 1.25rem;
+        border-radius: 8px;
+        border: 1px solid var(--green-200);
         text-align: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: var(--shadow-md);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        min-width: 140px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
         cursor: pointer;
     }
 
     .province-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-xl);
-        background: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
+        background: var(--green-50);
+        border-color: var(--green-500);
+        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.1);
     }
 
     .province-card h4 {
-        margin-bottom: 0.75rem;
-        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
         font-weight: 700;
+        color: var(--gray-800);
     }
 
     .province-count {
-        font-size: 1.75rem;
+        font-size: 1.4rem;
         font-weight: 800;
         margin: 0;
+        color: var(--green-600);
     }
 
     /* Recent List */
@@ -595,11 +614,11 @@
     </div>
 
     <div class="dashboard-section full-width">
-        <h2><i class="bi bi-geo-alt-fill"></i> Top Provinces</h2>
+        <h2><i class="bi bi-geo-alt-fill"></i> Top Barangays</h2>
         <div class="province-grid">
             {% for prov in province_stats %}
                 <div class="province-card">
-                    <h4>{{ prov.province }}</h4>
+                    <h4>{{ prov.barangay }}</h4>
                     <p class="province-count">{{ prov.count }}</p>
                 </div>
             {% empty %}

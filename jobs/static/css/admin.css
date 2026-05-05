@@ -48,6 +48,8 @@
     padding: 1.5rem 0;
     height: calc(100vh - 80px);
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     position: sticky;
     top: 80px;
     z-index: 10;
@@ -56,21 +58,11 @@
 }
 
 .admin-sidebar::-webkit-scrollbar {
-    width: 6px;
+    display: none;
 }
 
-.admin-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
 
-.admin-sidebar::-webkit-scrollbar-thumb {
-    background: var(--green-300);
-    border-radius: 3px;
-}
-
-.admin-sidebar::-webkit-scrollbar-thumb:hover {
-    background: var(--green-400);
-}
+/* Scrollbar for main content area - hidden but scrollable */
 
 .admin-nav {
     display: flex;
@@ -142,7 +134,13 @@
     flex: 1;
     padding: 2rem;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     background: var(--gray-50);
+}
+
+.admin-content::-webkit-scrollbar {
+    display: none;
 }
 
 /* Responsive Design */

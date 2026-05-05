@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - TrabahoPH{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-container">
+                <h1 class="display-1 fw-bold text-danger">500</h1>
+                <h2 class="mb-4">Server Error</h2>
+                <p class="text-muted mb-4">
+                    Something went wrong on our end. Our team has been notified and is working to fix it. Please try again later.
+                </p>
+                
+                <div class="alert alert-info" role="alert">
+                    <strong>Error Reference:</strong> Please provide this information if you contact support to help us identify and resolve the issue quickly.
+                </div>
+                
+                <div class="error-actions">
+                    <a href="{% url 'index' %}" class="btn btn-primary btn-lg me-2">
+                        <i class="fas fa-home"></i> Go Home
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <p class="text-muted small">
+                    <strong>Suggestions:</strong>
+                    <ul class="list-unstyled">
+                        <li>Refresh the page and try again</li>
+                        <li>Clear your browser cache and cookies</li>
+                        <li><a href="{% url 'index' %}#contact">Contact our support team</a> if the problem persists</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-container {
+    padding: 50px 0;
+}
+
+.error-actions {
+    margin-top: 30px;
+}
+
+.alert-info {
+    word-break: break-all;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

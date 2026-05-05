@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - TrabahoPH{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-container">
+                <h1 class="display-1 fw-bold text-danger">404</h1>
+                <h2 class="mb-4">Page Not Found</h2>
+                <p class="text-muted mb-4">
+                    Sorry, the page you're looking for doesn't exist. It might have been removed or the URL might be incorrect.
+                </p>
+                
+                <div class="error-actions">
+                    <a href="{% url 'index' %}" class="btn btn-primary btn-lg me-2">
+                        <i class="fas fa-home"></i> Go Home
+                    </a>
+                    <a href="{% url 'job_list' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-briefcase"></i> View Jobs
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <p class="text-muted small">
+                    <strong>Need help?</strong> <a href="{% url 'index' %}#contact">Contact us</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-container {
+    padding: 50px 0;
+}
+
+.error-actions {
+    margin-top: 30px;
+}
+</style>
+{% endblock %}

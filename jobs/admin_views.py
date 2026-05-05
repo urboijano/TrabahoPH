@@ -31,11 +31,20 @@ class AdminDashboardView(View):
         jobs_this_week = Job.objects.filter(created_at__gte=seven_days_ago).count()
         applications_this_week = Application.objects.filter(applied_at__gte=seven_days_ago).count()
         
-        # Get category statistics
-        category_stats = Job.objects.values('category').annotate(count=Count('id')).order_by('-count')
+        # Get category statistics for top 6 categories
+        top_categories = ['Technology', 'Healthcare', 'Business', 'Education', 'Arts', 'Trades']
+        category_stats = []
+        category_counts = Job.objects.values('category').annotate(count=Count('id')).order_by('-count')
+        category_count_dict = {cat['category']: cat['count'] for cat in category_counts}
         
-        # Get province statistics
-        province_stats = Job.objects.values('province').annotate(count=Count('id')).order_by('-count')[:10]
+        for category in top_categories:
+            category_stats.append({
+                'category': category,
+                'count': category_count_dict.get(category, 0)
+            })
+        
+        # Get barangay statistics
+        province_stats = Job.objects.values('barangay').annotate(count=Count('id')).order_by('-count')[:10]
         
         context = {
             'total_jobs': total_jobs,
@@ -96,3 +105,20 @@ class ManageUsersView(View):
             'page': 'manage_users'
         }
         return render(request, 'manage_users.html', context)
+    
+    def post(self, request):
+        action = request.POST.get('action')
+        employer_id = request.POST.get('employer_id')
+        
+        if action == 'activate' and employer_id:
+            try:
+                employer = Employer.objects.get(id=employer_id)
+                employer.user.is_active = True
+                employer.user.save()
+                from django.contrib import messages
+                messages.success(request, f'Employer {employer.business_name} has been activated.')
+            except Employer.DoesNotExist:
+                from django.contrib import messages
+                messages.error(request, 'Employer not found.')
+        
+        return redirect('manage_users')

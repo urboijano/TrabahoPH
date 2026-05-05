@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .validators import validate_dti_permit, validate_profile_image
 
 class JobSeeker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -8,8 +9,15 @@ class JobSeeker(models.Model):
     municipality = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
     skills = models.TextField(blank=True)
-    sms_alerts = models.BooleanField(default=True)
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        null=True,
+        blank=True,
+        validators=[validate_profile_image],
+        help_text='Profile picture (JPG or PNG, max 2MB)'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -23,6 +31,7 @@ class Employer(models.Model):
     municipality = models.CharField(max_length=100)
     barangay = models.CharField(max_length=100)
     business_description = models.TextField(blank=True)
+    dti_permit = models.FileField(upload_to='dti_permits/', null=True, blank=True, validators=[validate_dti_permit])
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -30,12 +39,16 @@ class Employer(models.Model):
 
 class Job(models.Model):
     CATEGORY_CHOICES = [
+        ('Technology', 'Technology'),
+        ('Healthcare', 'Healthcare'),
+        ('Business', 'Business'),
+        ('Education', 'Education'),
+        ('Arts', 'Arts'),
+        ('Trades', 'Trades'),
         ('Agriculture', 'Agriculture'),
         ('Tourism', 'Tourism'),
         ('Manufacturing', 'Manufacturing'),
         ('Government', 'Government'),
-        ('Healthcare', 'Healthcare'),
-        ('Education', 'Education'),
         ('Retail', 'Retail'),
         ('Construction', 'Construction'),
         ('Other', 'Other'),
@@ -53,6 +66,14 @@ class Job(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    is_approved = models.BooleanField(default=False, help_text='Job post requires admin approval before it appears in listings')
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['is_active', 'is_approved']),
+        ]
     
     def __str__(self):
         return self.title

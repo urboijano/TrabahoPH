@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - TrabahoPH</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.svg' %}">
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'css/admin.css' %}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -50,9 +52,9 @@
         }
 
         .navbar .btn-secondary {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: transparent !important;
             color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border: 2px solid white !important;
             padding: 12px 24px !important;
             font-size: 1rem !important;
             font-weight: 500 !important;
@@ -65,8 +67,9 @@
         }
 
         .navbar .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3) !important;
-            border-color: rgba(255, 255, 255, 0.5) !important;
+            background: white !important;
+            color: var(--green-600) !important;
+            border-color: white !important;
         }
 
         /* Green Sidebar */
@@ -107,7 +110,7 @@
         }
 
         .navbar .tagline {
-            display: none !important;
+            display: block !important;
         }
 
         .nav-container {
@@ -130,9 +133,9 @@
         }
 
         .nav-buttons form button {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: transparent !important;
             color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border: 2px solid white !important;
             padding: 12px 24px !important;
             border-radius: 8px !important;
             cursor: pointer !important;
@@ -149,17 +152,238 @@
         }
 
         .nav-buttons form button:hover {
-            background: rgba(255, 255, 255, 0.3) !important;
-            border-color: rgba(255, 255, 255, 0.5) !important;
+            background: white !important;
+            color: var(--green-600) !important;
+            border-color: white !important;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 9999;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 56px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-left: 4px solid;
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+            border-radius: 12px;
+        }
+
+        .toast.success {
+            border-left-color: var(--green-600);
+            color: var(--green-900);
+            background: linear-gradient(135deg, var(--green-100) 0%, rgba(255, 255, 255, 0.9) 100%);
+            box-shadow: 0 8px 24px rgba(22, 163, 74, 0.15);
+        }
+
+        .toast.success:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(22, 163, 74, 0.2);
+        }
+
+        .toast.success .toast-icon {
+            color: var(--green-600);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .toast.error {
+            border-left-color: #dc3545;
+            color: #721c24;
+            background: linear-gradient(135deg, #f8d7da 0%, rgba(255, 255, 255, 0.9) 100%);
+            box-shadow: 0 8px 24px rgba(220, 53, 69, 0.15);
+        }
+
+        .toast.error:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(220, 53, 69, 0.2);
+        }
+
+        .toast.error .toast-icon {
+            color: #dc3545;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .toast.warning {
+            border-left-color: #ffc107;
+            color: #856404;
+            background: linear-gradient(135deg, #fff3cd 0%, rgba(255, 255, 255, 0.9) 100%);
+            box-shadow: 0 8px 24px rgba(255, 193, 7, 0.15);
+        }
+
+        .toast.warning:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(255, 193, 7, 0.2);
+        }
+
+        .toast.warning .toast-icon {
+            color: #ffc107;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .toast.info {
+            border-left-color: #17a2b8;
+            color: #0c5460;
+            background: linear-gradient(135deg, #d1ecf1 0%, rgba(255, 255, 255, 0.9) 100%);
+            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.15);
+        }
+
+        .toast.info:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(23, 162, 184, 0.2);
+        }
+
+        .toast.info .toast-icon {
+            color: #17a2b8;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: inherit;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+            flex-shrink: 0;
+            margin-left: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.05);
+            transform: rotate(90deg);
+        }
+
+        .toast-close:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateY(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast.remove {
+            animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @media (max-width: 768px) {
+            .toast-container {
+                left: 12px;
+                right: 12px;
+                max-width: none;
+                bottom: 90px;
+            }
+            
+            .toast {
+                font-size: 0.9rem;
+                padding: 14px 16px;
+                min-height: 50px;
+                border-radius: 10px;
+            }
+            
+            .toast .toast-icon {
+                font-size: 1.1rem;
+            }
+            
+            .toast-close {
+                padding: 3px 6px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Messages stored for Toast Notifications -->
+    {% if messages %}
+        <script>
+            var djangoMessages = [
+                {% for message in messages %}
+                    {
+                        'text': '{{ message|escapejs }}',
+                        'type': '{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}'
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+        </script>
+    {% endif %}
+
     <header>
         <nav class="navbar">
             <div class="nav-container">
-                <h1 class="logo">🇵🇭 TrabahoPH Admin</h1>
-                <p class="tagline">Administration Dashboard</p>
+                <h1 class="logo"><i class="bi bi-briefcase"></i> TrabahoPH Admin</h1>
                 <div class="nav-buttons">
                     <a href="{% url 'index' %}" class="btn btn-secondary">Back to Site</a>
                     <form method="POST" action="{% url 'logout' %}">
@@ -187,9 +411,6 @@
                     <a href="{% url 'manage_users' %}" class="admin-nav-link {% if page == 'manage_users' %}active{% endif %}">
                         <i class="bi bi-people-fill"></i> Users
                     </a>
-                    <a href="{% url 'admin:index' %}" class="admin-nav-link">
-                        <i class="bi bi-sliders"></i> Django Admin
-                    </a>
                 </nav>
             </aside>
 
@@ -198,5 +419,63 @@
             </div>
         </div>
     </main>
+
+    <script>
+        // Toast Notification System
+        function showToast(message, type = 'info', duration = 4000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const iconMap = {
+                'success': 'bi-check-circle',
+                'error': 'bi-exclamation-circle',
+                'warning': 'bi-exclamation-triangle',
+                'info': 'bi-info-circle'
+            };
+            
+            const icon = iconMap[type] || iconMap['info'];
+            
+            toast.innerHTML = `
+                <i class="bi ${icon} toast-icon"></i>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto remove after duration
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add('remove');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            }, duration);
+        }
+
+        // Display Django messages as toasts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear any existing toasts first
+            const toastContainer = document.getElementById('toastContainer');
+            if (toastContainer) {
+                toastContainer.innerHTML = '';
+            }
+            
+            // Check if djangoMessages variable exists (set from template)
+            if (typeof djangoMessages !== 'undefined' && djangoMessages.length > 0) {
+                djangoMessages.forEach(function(msg) {
+                    if (msg.text && msg.text.trim()) {
+                        showToast(msg.text, msg.type);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
