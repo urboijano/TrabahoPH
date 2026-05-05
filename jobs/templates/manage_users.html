@@ -25,9 +25,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
-                        <th>Province</th>
                         <th>Barangay</th>
-                        <th>SMS Alerts</th>
                         <th>Joined</th>
                         <th>Actions</th>
                     </tr>
@@ -38,15 +36,7 @@
                         <td><strong>{{ seeker.user.first_name }} {{ seeker.user.last_name }}</strong></td>
                         <td>{{ seeker.user.email }}</td>
                         <td>{{ seeker.mobile }}</td>
-                        <td>{{ seeker.province }}</td>
                         <td>{{ seeker.barangay }}</td>
-                        <td>
-                            {% if seeker.sms_alerts %}
-                                <span class="badge-success">Yes</span>
-                            {% else %}
-                                <span class="badge-danger">No</span>
-                            {% endif %}
-                        </td>
                         <td>{{ seeker.created_at|date:"M d, Y" }}</td>
                         <td>
                             <a href="{% url 'admin:jobs_jobseeker_change' seeker.id %}" class="btn-small btn-info">
@@ -56,7 +46,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 2rem;">No job seekers found</td>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">No job seekers found</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -75,8 +65,8 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Type</th>
-                        <th>Province</th>
-                        <th>Joined</th>
+                        <th>DTI Permit</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -88,12 +78,39 @@
                         <td>{{ employer.user.email }}</td>
                         <td>{{ employer.contact_number }}</td>
                         <td><span class="badge">{{ employer.business_type }}</span></td>
-                        <td>{{ employer.province }}</td>
-                        <td>{{ employer.created_at|date:"M d, Y" }}</td>
                         <td>
-                            <a href="{% url 'admin:jobs_employer_change' employer.id %}" class="btn-small btn-info">
-                                <i class="bi bi-pencil-square"></i> Edit
-                            </a>
+                            {% if employer.dti_permit %}
+                                <a href="{{ employer.dti_permit.url }}" class="btn-small btn-info" target="_blank">
+                                    <i class="bi bi-download"></i> View
+                                </a>
+                            {% else %}
+                                <span style="color: #dc2626;">No permit</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if employer.user.is_active %}
+                                <span class="badge badge-success"><i class="bi bi-check-circle"></i> Active</span>
+                            {% else %}
+                                <span class="badge badge-danger"><i class="bi bi-clock"></i> Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not employer.user.is_active and employer.dti_permit %}
+                                <form method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="activate">
+                                    <input type="hidden" name="employer_id" value="{{ employer.id }}">
+                                    <button type="submit" class="btn-small btn-activate" title="Approve and activate this employer">
+                                        <i class="bi bi-check-circle"></i> Approve
+                                    </button>
+                                </form>
+                            {% elif not employer.user.is_active %}
+                                <span style="color: #6b7280; font-size: 0.85rem;">Waiting for DTI</span>
+                            {% else %}
+                                <a href="{% url 'admin:jobs_employer_change' employer.id %}" class="btn-small btn-info">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
@@ -209,6 +226,25 @@
 
     .btn-info {
         background: #10b981;
+    }
+
+    .btn-activate {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        border: none;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: white;
+        background: #059669;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-activate:hover {
+        background: #047857;
+        transform: translateY(-1px);
     }
 </style>
 {% endblock %}

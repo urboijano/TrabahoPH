@@ -400,43 +400,6 @@
         color: var(--border);
     }
 
-    .messages {
-        margin-bottom: 1.5rem;
-        animation: slideUp 0.3s ease;
-    }
-
-    .alert {
-        padding: 14px 16px;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-        border-left: 4px solid;
-        font-weight: 500;
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .alert-danger {
-        background: #fee2e2;
-        border-left-color: #ef4444;
-        color: #991b1b;
-    }
-
-    .alert-success {
-        background: #dcfce7;
-        border-left-color: #10b981;
-        color: #166534;
-    }
-
     .field-group {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -696,16 +659,6 @@
             <p>Create your account to start your journey</p>
         </div>
 
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}danger{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
         <!-- Form Tab Selection -->
         <div class="form-tabs">
             <button class="form-tab-button active" onclick="showJobSeekerForm()">
@@ -758,16 +711,75 @@
                 </div>
                 <div class="field-group full">
                     <div class="form-group">
-                        <label for="seeker-province">Province</label>
-                        <select id="seeker-province" name="province" required>
-                            <option value="">Select Your Province</option>
-                            <option value="Quezon">Quezon</option>
-                            <option value="Laguna">Laguna</option>
-                            <option value="Batangas">Batangas</option>
-                            <option value="Cavite">Cavite</option>
-                            <option value="Rizal">Rizal</option>
-                            <option value="Bulacan">Bulacan</option>
-                        </select>
+                        <label for="seeker-barangay">Barangay</label>
+                        <div style="position: relative; width: 100%;">
+                            <input type="text" id="seeker-barangay" name="province" placeholder="Select barangay..." list="barangay-list-register" required autocomplete="off" style="width: 100%; padding: 6px 35px 6px 12px; border: 2px solid var(--light-green); border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; background-color: white; box-sizing: border-box;">
+                            <button type="button" onclick="clearSeekerBarangay()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 1rem; padding: 0; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'"><i class="fas fa-times-circle"></i></button>
+                            <datalist id="barangay-list-register">
+                                <option value="Alicaocao">
+                                <option value="Alinam">
+                                <option value="Amobocan">
+                                <option value="Andarayan">
+                                <option value="Bacolod">
+                                <option value="Baringin Norte">
+                                <option value="Baringin Sur">
+                                <option value="Buena Suerte">
+                                <option value="Bugallon">
+                                <option value="Buyon">
+                                <option value="Cabaruan">
+                                <option value="Cabugao">
+                                <option value="Carabatan Chica">
+                                <option value="Carabatan Grande">
+                                <option value="Carabatan Punta">
+                                <option value="Carabatan Bacareno">
+                                <option value="Casalatan">
+                                <option value="San Pablo">
+                                <option value="Cassap Fuera">
+                                <option value="Catalina">
+                                <option value="Culalabat">
+                                <option value="Dabburab">
+                                <option value="De Vera">
+                                <option value="Dianao">
+                                <option value="Dissimuray">
+                                <option value="Duminit">
+                                <option value="Faustino (Sipay)">
+                                <option value="Gagabutan">
+                                <option value="Gappal">
+                                <option value="Guayabal">
+                                <option value="Labinab">
+                                <option value="Linglingay">
+                                <option value="Mabantad">
+                                <option value="Maligaya">
+                                <option value="Manaoag">
+                                <option value="Marabulig I">
+                                <option value="Marabulig II">
+                                <option value="Minante I">
+                                <option value="Minante II">
+                                <option value="Nagcampegan">
+                                <option value="Naganacan">
+                                <option value="Nagrumbuan">
+                                <option value="Nungnungan I">
+                                <option value="Nungnungan II">
+                                <option value="Pinoma">
+                                <option value="Rizal">
+                                <option value="Rogus">
+                                <option value="San Antonio">
+                                <option value="San Fermin">
+                                <option value="San Francisco">
+                                <option value="San Isidro">
+                                <option value="San Luis">
+                                <option value="Santa Luciana (Daburab 2)">
+                                <option value="Santa Maria">
+                                <option value="Sillawit">
+                                <option value="Sinippil">
+                                <option value="Tagaran">
+                                <option value="Turayong">
+                                <option value="Union">
+                                <option value="Villa Concepcion">
+                                <option value="Villa Luna">
+                                <option value="Villaflor">
+                            </datalist>
+                        </div>
                     </div>
                 </div>
                 <div class="field-group">
@@ -820,7 +832,7 @@
         <div id="employerForm" class="register-form hidden">
             <h2>Join as Employer</h2>
             <p class="subtitle">Create your account and start posting job opportunities</p>
-            <form method="post" action="{% url 'register_employer' %}">
+            <form method="post" action="{% url 'register_employer' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="field-group full">
                     <div class="form-group">
@@ -862,22 +874,29 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="employer-province">Province</label>
-                        <select id="employer-province" name="province" required>
-                            <option value="">Select Your Province</option>
-                            <option value="Quezon">Quezon</option>
-                            <option value="Laguna">Laguna</option>
-                            <option value="Batangas">Batangas</option>
-                            <option value="Cavite">Cavite</option>
-                            <option value="Rizal">Rizal</option>
-                            <option value="Bulacan">Bulacan</option>
-                        </select>
+                        <label for="employer-barangay">Barangay</label>
+                        <div style="position: relative; width: 100%;">
+                            <input type="text" id="employer-barangay" name="province" placeholder="Select barangay..." list="barangay-list-register" required autocomplete="off" style="width: 100%; padding: 6px 35px 6px 12px; border: 2px solid var(--light-green); border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; background-color: white; box-sizing: border-box;">
+                            <button type="button" onclick="clearEmployerBarangay()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 1rem; padding: 0; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'"><i class="fas fa-times-circle"></i></button>
+                        </div>
                     </div>
                 </div>
-                <div class="field-group full">
+                <div class="field-group">
                     <div class="form-group">
                         <label for="employer-businessDescription">Business Description</label>
                         <textarea id="employer-businessDescription" name="businessDescription" placeholder="Brief description of your business (optional)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <label for="employer-dtiPermit" style="margin-top: 0.15rem;">DTI Permit</label>
+                            <div class="password-info-icon" data-info-id="employer-dtiPermit-tooltip" style="margin-top: 0.15rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="password-tooltip" id="employer-dtiPermit-tooltip">
+                                    <p style="font-size: 0.85rem; color: white; margin: 0; font-weight: 600;">Accepted formats: PDF, JPG, or PNG</p>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="employer-dtiPermit" name="dtiPermit" accept=".pdf,.jpg,.jpeg,.png" required>
                     </div>
                 </div>
                 <div class="field-group">
@@ -943,6 +962,16 @@
         document.querySelectorAll('.form-tab-button')[0].classList.remove('active');
         document.querySelectorAll('.form-tab-button')[1].classList.add('active');
         grecaptcha.reset();
+    }
+
+    function clearSeekerBarangay() {
+        document.getElementById('seeker-barangay').value = '';
+        document.getElementById('seeker-barangay').focus();
+    }
+
+    function clearEmployerBarangay() {
+        document.getElementById('employer-barangay').value = '';
+        document.getElementById('employer-barangay').focus();
     }
 
     // Real-time validation for name fields (only letters, spaces, and periods)
@@ -1278,5 +1307,6 @@
             }
         }
     });
+
 </script>
 {% endblock %}

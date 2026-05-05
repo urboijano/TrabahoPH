@@ -12,8 +12,13 @@ urlpatterns = [
     path('register-employer/', views.RegisterEmployerView.as_view(), name='register_employer'),
     path('verify-email/<uidb64>/<token>/', views.VerifyEmailView.as_view(), name='verify_email'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('edit-profile/', views.EditProfileView.as_view(), name='edit_profile'),
     path('jobs/', views.JobListView.as_view(), name='job_list'),
     path('apply/<int:job_id>/', views.ApplyJobView.as_view(), name='apply_job'),
+    path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
+    path('verify-code/', views.VerifyCodeView.as_view(), name='verify_code'),
+    path('resend-code/', views.ResendCodeView.as_view(), name='resend_code'),
+    path('reset-password/', views.ResetPasswordView.as_view(), name='reset_password'),
     
     # Admin Dashboard URLs
     path('admin-dashboard/', admin_views.AdminDashboardView.as_view(), name='admin_dashboard'),
@@ -24,4 +29,5 @@ urlpatterns = [
     # New Dashboard URLs
     path('seeker-dashboard/', dashboard_views.SeekerDashboardView.as_view(), name='seeker_dashboard'),
     path('employer-dashboard/', dashboard_views.EmployerDashboardView.as_view(), name='employer_dashboard'),
+    path('post-job/', dashboard_views.PostJobView.as_view(), name='post_job'),
 ]

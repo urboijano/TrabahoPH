@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - Trabaho{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #27a745;
+        --primary-dark: #1b5c2e;
+        --primary-light: #3fc050;
+        --secondary: #52b788;
+        --light-green: #b7e4c7;
+        --very-light-green: #d8f3dc;
+    }
+
+    .edit-profile-container {
+        background: #f8fafb;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .edit-profile-card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        padding: 2rem;
+        color: white;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .form-header .back-link {
+        display: inline-block;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-header .back-link:hover {
+        color: white;
+        transform: translateX(-4px);
+    }
+
+    .form-content {
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .form-section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--very-light-green);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .form-section-title i {
+        color: var(--primary);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 0.95rem;
+    }
+
+    .form-group label i {
+        color: var(--primary);
+        margin-right: 0.5rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--very-light-green);
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.3s;
+        box-sizing: border-box;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group input[type="email"]:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(39, 167, 69, 0.1);
+        background-color: rgba(39, 167, 69, 0.01);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--very-light-green);
+    }
+
+    .form-actions a,
+    .form-actions button {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .form-helper-text {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-top: 0.3rem;
+    }
+
+    @media (max-width: 768px) {
+        .edit-profile-container {
+            padding: 1rem;
+        }
+
+        .form-header {
+            padding: 1.5rem;
+        }
+
+        .form-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .form-content {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions a,
+        .form-actions button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="edit-profile-container">
+    <div class="edit-profile-card">
+        <div class="form-header">
+            <h1><i class="fas fa-user-edit"></i> Edit My Profile</h1>
+            <a href="{% url 'seeker_dashboard' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="form-content">
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-id-card"></i>
+                        Personal Information
+                    </h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">
+                                <i class="fas fa-user"></i> First Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="first_name" 
+                                name="first_name" 
+                                value="{{ job_seeker.user.first_name }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last_name">
+                                <i class="fas fa-user"></i> Last Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="last_name" 
+                                name="last_name" 
+                                value="{{ job_seeker.user.last_name }}"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value="{{ job_seeker.user.email }}"
+                        >
+                        <div class="form-helper-text">Your email is used for login and account recovery</div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-phone"></i>
+                        Contact Information
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="mobile">
+                            <i class="fas fa-mobile-alt"></i> Phone Number
+                        </label>
+                        <input 
+                            type="text" 
+                            id="mobile" 
+                            name="mobile" 
+                            value="{{ job_seeker.mobile }}"
+                            placeholder="(+63) 9XXXXXXXXX"
+                        >
+                    </div>
+                </div>
+
+                <!-- Location Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Location
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="barangay">
+                            <i class="fas fa-map"></i> Barangay
+                        </label>
+                        <div style="position: relative; width: 100%;">
+                            <input 
+                                type="text" 
+                                id="barangay" 
+                                name="barangay" 
+                                placeholder="Search and select barangay..."
+                                list="barangay-list" 
+                                value="{{ job_seeker.barangay }}"
+                                autocomplete="off"
+                                style="width: 100%; padding: 6px 35px 6px 12px; border: 2px solid var(--light-green); border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; background-color: white; box-sizing: border-box;"
+                            >
+                            <button type="button" onclick="clearBarangay()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 1rem; padding: 0; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'"><i class="fas fa-times-circle"></i></button>
+                            <datalist id="barangay-list">
+                                <option value="Alicaocao">
+                                <option value="Alinam">
+                                <option value="Amobocan">
+                                <option value="Andarayan">
+                                <option value="Bacolod">
+                                <option value="Baringin Norte">
+                                <option value="Baringin Sur">
+                                <option value="Buena Suerte">
+                                <option value="Bugallon">
+                                <option value="Buyon">
+                                <option value="Cabaruan">
+                                <option value="Cabugao">
+                                <option value="Carabatan Chica">
+                                <option value="Carabatan Grande">
+                                <option value="Carabatan Punta">
+                                <option value="Carabatan Bacareno">
+                                <option value="Casalatan">
+                                <option value="San Pablo">
+                                <option value="Cassap Fuera">
+                                <option value="Catalina">
+                                <option value="Culalabat">
+                                <option value="Dabburab">
+                                <option value="De Vera">
+                                <option value="Dianao">
+                                <option value="Dissimuray">
+                                <option value="Duminit">
+                                <option value="Faustino (Sipay)">
+                                <option value="Gagabutan">
+                                <option value="Gappal">
+                                <option value="Guayabal">
+                                <option value="Labinab">
+                                <option value="Linglingay">
+                                <option value="Mabantad">
+                                <option value="Maligaya">
+                                <option value="Manaoag">
+                                <option value="Marabulig I">
+                                <option value="Marabulig II">
+                                <option value="Minante I">
+                                <option value="Minante II">
+                                <option value="Nagcampegan">
+                                <option value="Naganacan">
+                                <option value="Nagrumbuan">
+                                <option value="Nungnungan I">
+                                <option value="Nungnungan II">
+                                <option value="Pinoma">
+                                <option value="Rizal">
+                                <option value="Rogus">
+                                <option value="San Antonio">
+                                <option value="San Fermin">
+                                <option value="San Francisco">
+                                <option value="San Isidro">
+                                <option value="San Luis">
+                                <option value="Santa Luciana (Daburab 2)">
+                                <option value="Santa Maria">
+                                <option value="Sillawit">
+                                <option value="Sinippil">
+                                <option value="Tagaran">
+                                <option value="Turayong">
+                                <option value="Union">
+                                <option value="Villa Concepcion">
+                                <option value="Villa Luna">
+                                <option value="Villaflor">
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Skills Section -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-star"></i>
+                        Professional Skills
+                    </h2>
+
+                    <div class="form-group">
+                        <label for="skills">
+                            <i class="fas fa-list"></i> Your Skills
+                        </label>
+                        <textarea 
+                            id="skills" 
+                            name="skills" 
+                            placeholder="Enter your skills separated by commas. Example: Communication, Leadership, Programming, Customer Service"
+                        >{{ job_seeker.skills }}</textarea>
+                        <div class="form-helper-text">Add skills separated by commas to help employers find you</div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="{% url 'seeker_dashboard' %}" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function clearBarangay() {
+        document.getElementById('barangay').value = '';
+        document.getElementById('barangay').focus();
+    }
+</script>
+
+{% endblock %}

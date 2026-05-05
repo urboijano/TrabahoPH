@@ -1,0 +1,679 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post a Job - Employer{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #27a745;
+        --primary-dark: #1b5c2e;
+        --primary-light: #3fc050;
+        --secondary: #52b788;
+        --light-green: #b7e4c7;
+        --very-light-green: #d8f3dc;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --border: #e5e7eb;
+        --error: #ef4444;
+        --error-light: #fee2e2;
+    }
+
+    .post-job-container {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        min-height: 100vh;
+        padding: 2rem 3rem;
+    }
+
+    .post-job-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Header Section */
+    .post-job-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        padding: 2.5rem;
+        border-radius: 12px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 2px 8px rgba(39, 167, 69, 0.2);
+        border: none;
+        animation: slideInFromTop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .post-job-header h1 {
+        margin: 0 0 0.8rem 0;
+        color: white;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .post-job-header i {
+        color: white;
+    }
+
+    .post-job-header p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    /* Form Section */
+    .post-job-form {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border);
+        animation: slideInFromBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--very-light-green);
+    }
+
+    .form-section-title h3 {
+        margin: 0;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .form-section-title i {
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row.full {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 0.6rem;
+        color: var(--text-dark);
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-group label .required {
+        color: var(--error);
+        font-size: 1.1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        color: var(--text-dark);
+        background: #fafbfc;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: var(--text-light);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(39, 167, 69, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-help {
+        margin-top: 0.4rem;
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+
+    /* Messages */
+    .messages {
+        margin-bottom: 2rem;
+    }
+
+    .alert {
+        padding: 1.2rem;
+        border-radius: 8px;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        animation: slideInFromTop 0.4s ease;
+    }
+
+    .alert i {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .alert.error {
+        background: var(--error-light);
+        border: 1px solid #fca5a5;
+        color: var(--text-dark);
+    }
+
+    .alert.error i {
+        color: var(--error);
+    }
+
+    .alert.success {
+        background: #dcfce7;
+        border: 1px solid #86efac;
+        color: var(--text-dark);
+    }
+
+    .alert.success i {
+        color: var(--primary);
+    }
+
+    .alert ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .alert li {
+        margin-bottom: 0.3rem;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.9rem 1.8rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(39, 167, 69, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(39, 167, 69, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+        background: white;
+        color: var(--primary);
+    }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+        border-left: 4px solid #3b82f6;
+        padding: 1.2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .info-box-title {
+        color: #1f2937;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .info-box-title i {
+        color: #3b82f6;
+    }
+
+    .info-box-text {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Animations */
+    @keyframes slideInFromTop {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInFromBottom {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .post-job-container {
+            padding: 1rem;
+        }
+
+        .post-job-header {
+            padding: 1.5rem;
+        }
+
+        .post-job-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .post-job-form {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            justify-content: stretch;
+        }
+
+        .form-actions .btn {
+            width: 100%;
+        }
+
+        .post-job-wrapper {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<div class="post-job-container">
+    <div class="post-job-wrapper">
+        <!-- Header -->
+        <div class="post-job-header">
+            <h1><i class="fas fa-plus-circle"></i> Post a New Job</h1>
+            <p>Create a job listing to find qualified candidates for your business</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-box-title">
+                <i class="fas fa-info-circle"></i> Note
+            </div>
+            <div class="info-box-text">
+                Your job posting will be reviewed by our admin team before appearing in job listings. This ensures quality and compliance with our guidelines.
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" class="post-job-form">
+            {% csrf_token %}
+
+            <!-- Job Details Section -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Job Details</h3>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="title">
+                            Job Title
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            placeholder="e.g., Agricultural Specialist, Tourism Guide"
+                            value="{{ form_data.title|default:'' }}"
+                            required
+                        >
+                        <span class="form-help">3-200 characters describing the job position</span>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="description">
+                            Job Description
+                            <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            placeholder="Describe the job responsibilities, requirements, and expectations..."
+                            required
+                        >{{ form_data.description|default:'' }}</textarea>
+                        <span class="form-help">Minimum 20 characters. Be descriptive to attract qualified candidates</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">
+                            Category
+                            <span class="required">*</span>
+                        </label>
+                        <select id="category" name="category" required>
+                            <option value="">-- Select Category --</option>
+                            {% for value, label in categories %}
+                                <option value="{{ value }}" {% if form_data.category == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="salary">
+                            Salary/Compensation
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="salary" 
+                            name="salary" 
+                            placeholder="e.g., PHP 15,000 - 20,000/month"
+                            value="{{ form_data.salary|default:'' }}"
+                            required
+                        >
+                        <span class="form-help">Include currency and pay period</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Job Location</h3>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="barangaySelect">
+                            <i class="fas fa-map-marker-alt" style="margin-right: 0.4rem; color: var(--primary);"></i>
+                            Barangay
+                            <span class="required">*</span>
+                        </label>
+                        <div style="position: relative; width: 100%;">
+                            <input 
+                                type="text" 
+                                id="barangaySelect" 
+                                name="barangay" 
+                                placeholder="Select barangay..." 
+                                list="barangay-list-jobs"
+                                value="{{ form_data.barangay|default:'' }}"
+                                required
+                                style="width: 100%; padding: 6px 35px 6px 12px; border: 2px solid var(--light-green); border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; background-color: white; box-sizing: border-box;"
+                            >
+                            <button type="button" onclick="clearBarangayPost()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 1rem; padding: 0; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'"><i class="fas fa-times-circle"></i></button>
+                            <datalist id="barangay-list-jobs">
+                                <option value="Alicaocao">
+                                <option value="Alinam">
+                                <option value="Amobocan">
+                                <option value="Andarayan">
+                                <option value="Bacolod">
+                                <option value="Baringin Norte">
+                                <option value="Baringin Sur">
+                                <option value="Buena Suerte">
+                                <option value="Bugallon">
+                                <option value="Buyon">
+                                <option value="Cabaruan">
+                                <option value="Cabugao">
+                                <option value="Carabatan Chica">
+                                <option value="Carabatan Grande">
+                                <option value="Carabatan Punta">
+                                <option value="Carabatan Bacareno">
+                                <option value="Casalatan">
+                                <option value="San Pablo">
+                                <option value="Cassap Fuera">
+                                <option value="Catalina">
+                                <option value="Culalabat">
+                                <option value="Dabburab">
+                                <option value="De Vera">
+                                <option value="Dianao">
+                                <option value="Dissimuray">
+                                <option value="Duminit">
+                                <option value="Faustino (Sipay)">
+                                <option value="Gagabutan">
+                                <option value="Gappal">
+                                <option value="Guayabal">
+                                <option value="Labinab">
+                                <option value="Linglingay">
+                                <option value="Mabantad">
+                                <option value="Maligaya">
+                                <option value="Manaoag">
+                                <option value="Marabulig I">
+                                <option value="Marabulig II">
+                                <option value="Minante I">
+                                <option value="Minante II">
+                                <option value="Nagcampegan">
+                                <option value="Naganacan">
+                                <option value="Nagrumbuan">
+                                <option value="Nungnungan I">
+                                <option value="Nungnungan II">
+                                <option value="Pinoma">
+                                <option value="Rizal">
+                                <option value="Rogus">
+                                <option value="San Antonio">
+                                <option value="San Fermin">
+                                <option value="San Francisco">
+                                <option value="San Isidro">
+                                <option value="San Luis">
+                                <option value="Santa Luciana (Daburab 2)">
+                                <option value="Santa Maria">
+                                <option value="Sillawit">
+                                <option value="Sinippil">
+                                <option value="Tagaran">
+                                <option value="Tagcaoan">
+                                <option value="Taguite">
+                                <option value="Taleb">
+                                <option value="Talwady">
+                                <option value="Tanag">
+                                <option value="Tanggal">
+                                <option value="Tilad">
+                                <option value="Tinegu">
+                                <option value="Toktok">
+                                <option value="Tongolalagen">
+                                <option value="Tonsuyan">
+                                <option value="Tubao">
+                                <option value="Tubdalan">
+                                <option value="Tuday">
+                                <option value="Tudela">
+                                <option value="Tukugan">
+                                <option value="Tumulak">
+                                <option value="Tuyan">
+                                <option value="Ugmad">
+                                <option value="Ulilibot">
+                                <option value="Umaging">
+                                <option value="Umali Aplaya">
+                                <option value="Umali Palalaan">
+                                <option value="Umali Poblacion">
+                                <option value="Umbayao">
+                                <option value="Umeguio">
+                                <option value="Umilid">
+                                <option value="Uminting">
+                                <option value="Umingan">
+                                <option value="Umiyuan">
+                                <option value="Umoli">
+                                <option value="Umulgan">
+                                <option value="Umolonga">
+                                <option value="Umoyaoan">
+                                <option value="Umpalan">
+                                <option value="Umoy (Loob)">
+                                <option value="Umpay">
+                                <option value="Umpisitan">
+                                <option value="Umplasan">
+                                <option value="Umpucan">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">
+                            Exact Location/Address
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            placeholder="e.g., 123 Main Street, Poblacion District, Near Municipal Hall"
+                            value="{{ form_data.location|default:'' }}"
+                            required
+                        >
+                        <span class="form-help">Specific address or landmark details</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Post Job
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Clear barangay selection
+    function clearBarangayPost() {
+        document.getElementById('barangaySelect').value = '';
+        document.getElementById('barangaySelect').focus();
+    }
+
+    // Form validation
+    document.querySelector('.post-job-form').addEventListener('submit', function(e) {
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const category = document.getElementById('category').value.trim();
+        const barangay = document.getElementById('barangaySelect').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const salary = document.getElementById('salary').value.trim();
+
+        if (!title || !description || !category || !barangay || !location || !salary) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return false;
+        }
+
+        if (title.length < 3) {
+            e.preventDefault();
+            alert('Job title must be at least 3 characters long.');
+            return false;
+        }
+
+        if (description.length < 20) {
+            e.preventDefault();
+            alert('Job description must be at least 20 characters long.');
+            return false;
+        }
+    });
+
+    // Character counter for description
+    const descriptionField = document.getElementById('description');
+    descriptionField.addEventListener('input', function() {
+        const charCount = this.value.length;
+        console.log(`Characters: ${charCount}`);
+    });
+</script>
+
+{% endblock %}

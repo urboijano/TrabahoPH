@@ -45,6 +45,54 @@
         box-shadow: 0 8px 20px rgba(27, 92, 46, 0.08);
     }
 
+    /* Profile Warning */
+    .profile-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+        border-left: 4px solid #ffc107;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .warning-icon {
+        font-size: 1.5rem;
+        color: #ff9800;
+        flex-shrink: 0;
+    }
+
+    .warning-content h3 {
+        margin: 0 0 0.5rem 0;
+        color: #856404;
+        font-size: 1.1rem;
+    }
+
+    .warning-content p {
+        margin: 0 0 0.75rem 0;
+        color: #856404;
+        font-size: 0.95rem;
+    }
+
+    .warning-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #ff9800;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 152, 0, 0.1);
+        border-radius: 6px;
+    }
+
+    .warning-link:hover {
+        color: #e68900;
+        background: rgba(255, 152, 0, 0.2);
+    }
+
     .filter-title {
         display: flex;
         align-items: center;
@@ -370,6 +418,20 @@
             <h1>Browse Available Jobs</h1>
         </div>
         
+        <!-- Profile Warning Banner -->
+        {% if user.is_authenticated and not profile_complete %}
+        <div class="profile-warning">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="warning-content">
+                <h3>Complete Your Profile</h3>
+                <p>Please complete your profile information before applying for jobs. This helps employers better understand your qualifications.</p>
+                <a href="{% url 'edit_profile' %}" class="warning-link">Complete Profile <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        {% endif %}
+        
         <!-- Filters -->
         <div class="filter-card">
             <div class="filter-title">
@@ -401,22 +463,78 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="provinceSelect">
+                    <label for="barangaySelect">
                         <i class="fas fa-map-marker-alt" style="margin-right: 0.4rem; color: var(--primary);"></i>
-                        Province
+                        Barangay
                     </label>
-                    <select id="provinceSelect" name="province">
-                        <option value="">All Provinces</option>
-                        <option value="Quezon" {% if request.GET.province == 'Quezon' %}selected{% endif %}>Quezon</option>
-                        <option value="Laguna" {% if request.GET.province == 'Laguna' %}selected{% endif %}>Laguna</option>
-                        <option value="Batangas" {% if request.GET.province == 'Batangas' %}selected{% endif %}>Batangas</option>
-                        <option value="Cavite" {% if request.GET.province == 'Cavite' %}selected{% endif %}>Cavite</option>
-                        <option value="Rizal" {% if request.GET.province == 'Rizal' %}selected{% endif %}>Rizal</option>
-                        <option value="Bulacan" {% if request.GET.province == 'Bulacan' %}selected{% endif %}>Bulacan</option>
-                        <option value="Nueva Ecija" {% if request.GET.province == 'Nueva Ecija' %}selected{% endif %}>Nueva Ecija</option>
-                        <option value="Pampanga" {% if request.GET.province == 'Pampanga' %}selected{% endif %}>Pampanga</option>
-                        <option value="Tarlac" {% if request.GET.province == 'Tarlac' %}selected{% endif %}>Tarlac</option>
-                    </select>
+                    <div style="position: relative; width: 100%;">
+                        <input type="text" id="barangaySelect" name="province" placeholder="Select barangay..." list="barangay-list-jobs" value="{{ request.GET.province }}" style="width: 100%; padding: 6px 35px 6px 12px; border: 2px solid var(--light-green); border-radius: 8px; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; background-color: white; box-sizing: border-box;">
+                        <button type="button" onclick="clearBarangayJobs()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 1rem; padding: 0; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'"><i class="fas fa-times-circle"></i></button>
+                        <datalist id="barangay-list-jobs">
+                            <option value="Alicaocao">
+                            <option value="Alinam">
+                            <option value="Amobocan">
+                            <option value="Andarayan">
+                            <option value="Bacolod">
+                            <option value="Baringin Norte">
+                            <option value="Baringin Sur">
+                            <option value="Buena Suerte">
+                            <option value="Bugallon">
+                            <option value="Buyon">
+                            <option value="Cabaruan">
+                            <option value="Cabugao">
+                            <option value="Carabatan Chica">
+                            <option value="Carabatan Grande">
+                            <option value="Carabatan Punta">
+                            <option value="Carabatan Bacareno">
+                            <option value="Casalatan">
+                            <option value="San Pablo">
+                            <option value="Cassap Fuera">
+                            <option value="Catalina">
+                            <option value="Culalabat">
+                            <option value="Dabburab">
+                            <option value="De Vera">
+                            <option value="Dianao">
+                            <option value="Dissimuray">
+                            <option value="Duminit">
+                            <option value="Faustino (Sipay)">
+                            <option value="Gagabutan">
+                            <option value="Gappal">
+                            <option value="Guayabal">
+                            <option value="Labinab">
+                            <option value="Linglingay">
+                            <option value="Mabantad">
+                            <option value="Maligaya">
+                            <option value="Manaoag">
+                            <option value="Marabulig I">
+                            <option value="Marabulig II">
+                            <option value="Minante I">
+                            <option value="Minante II">
+                            <option value="Nagcampegan">
+                            <option value="Naganacan">
+                            <option value="Nagrumbuan">
+                            <option value="Nungnungan I">
+                            <option value="Nungnungan II">
+                            <option value="Pinoma">
+                            <option value="Rizal">
+                            <option value="Rogus">
+                            <option value="San Antonio">
+                            <option value="San Fermin">
+                            <option value="San Francisco">
+                            <option value="San Isidro">
+                            <option value="San Luis">
+                            <option value="Santa Luciana (Daburab 2)">
+                            <option value="Santa Maria">
+                            <option value="Sillawit">
+                            <option value="Sinippil">
+                            <option value="Tagaran">
+                            <option value="Turayong">
+                            <option value="Union">
+                            <option value="Villa Concepcion">
+                            <option value="Villa Luna">
+                            <option value="Villaflor">
+                        </datalist>
+                    </div>
                 </div>
                 <div class="filter-buttons">
                     <button type="submit" class="btn btn-primary">
@@ -580,6 +698,11 @@
     function showLoginAlert() {
         alert('Please login or sign up to apply for jobs!');
         window.location.href = '{% url 'auth' %}';
+    }
+
+    function clearBarangayJobs() {
+        document.getElementById('barangaySelect').value = '';
+        document.getElementById('barangaySelect').focus();
     }
 
     // Close modal when clicking outside

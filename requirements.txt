@@ -1,2 +1,12 @@
 Django==6.0.3
 requests==2.31.0
+django-extensions==3.2.3
+pyOpenSSL==24.0.0
+Werkzeug==3.0.1
+google-generativeai>=0.8.0
+django-axes==6.1.1
+python-decouple==3.8
+python-dotenv==1.0.0
+djangorestframework==3.14.0
+django-filter==24.1
+Pillow>=10.0.0

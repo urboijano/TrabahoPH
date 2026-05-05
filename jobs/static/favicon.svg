@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="#27a745" opacity="0.1"/>
+  <circle cx="50" cy="50" r="45" fill="none" stroke="#27a745" stroke-width="2"/>
+  
+  <!-- Briefcase Icon -->
+  <g transform="translate(50, 50)">
+    <!-- Main briefcase body -->
+    <rect x="-18" y="-8" width="36" height="24" rx="2" fill="#27a745" stroke="#1b5c2e" stroke-width="1.5"/>
+    
+    <!-- Briefcase handle -->
+    <path d="M -10 -8 Q -10 -16 0 -16 Q 10 -16 10 -8" fill="none" stroke="#27a745" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Lock/clasp detail -->
+    <circle cx="0" cy="-2" r="2.5" fill="#1b5c2e"/>
+    
+    <!-- Highlight -->
+    <rect x="-16" y="-6" width="32" height="4" rx="1" fill="#3fc050" opacity="0.6"/>
+  </g>
+</svg>

@@ -3,44 +3,501 @@
 
 {% block title %}My Dashboard - Employer{% endblock %}
 
-{% block content %}
-<div class="admin-main">
-    <div class="admin-container">
-        <!-- Sidebar Navigation -->
-        <div class="admin-sidebar">
-            <nav class="admin-nav">
-                <a href="{% url 'employer_dashboard' %}" class="admin-nav-link active">
-                    <span>📊</span> Dashboard
-                </a>
-                <a href="#" class="admin-nav-link" onclick="postNewJob()">
-                    <span>➕</span> Post Job
-                </a>
-                <a href="#" class="admin-nav-link" onclick="manageJobs()">
-                    <span>💼</span> My Jobs
-                </a>
-                <a href="#" class="admin-nav-link" onclick="editProfile()">
-                    <span>🏢</span> Company Profile
-                </a>
-                <a href="{% url 'index' %}" class="admin-nav-link">
-                    <span>🏠</span> Home
-                </a>
-            </nav>
-        </div>
+{% block footer %}{% endblock %}
 
-        <!-- Main Content -->
-        <div class="admin-content">
-            <div class="page-header">
-                <h1>Employer Dashboard</h1>
+{% block content %}
+<style>
+    :root {
+        --primary: #27a745;
+        --primary-dark: #1b5c2e;
+        --primary-light: #3fc050;
+        --secondary: #52b788;
+        --light-green: #b7e4c7;
+        --very-light-green: #d8f3dc;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --border: #e5e7eb;
+    }
+
+    .employer-dashboard {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        min-height: 100vh;
+        padding: 2rem 3rem;
+    }
+
+    /* Header Section */
+    .dashboard-header {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border);
+        opacity: 0;
+        animation: slideInFromLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .dashboard-header h1 {
+        margin: 0 0 0.8rem 0;
+        color: var(--text-dark);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .dashboard-header .welcome-section {
+        display: block;
+    }
+
+    .welcome-text {
+        font-size: 1rem;
+        color: var(--text-light);
+        font-weight: 500;
+    }
+
+    /* Top Section Layout */
+    .top-section {
+        display: grid;
+        grid-template-columns: 2.5fr 1.5fr;
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .top-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .top-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+        opacity: 0;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(39, 167, 69, 0.12);
+        border-color: var(--light-green);
+    }
+
+    .stat-card.visible {
+        animation: slideInFromLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .stat-icon-box {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .stat-content h3 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+        line-height: 1.2;
+    }
+
+    .stat-content p {
+        margin: 0.5rem 0 0 0;
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .stat-content small {
+        display: block;
+        color: var(--text-light);
+        opacity: 0.8;
+        margin-top: 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    /* Quick Access Panel */
+    .top-profile {
+        position: static;
+        opacity: 0;
+    }
+
+    .top-profile.visible {
+        animation: slideInFromRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* Main Content Grid */
+    .dashboard-main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        margin-top: 2.5rem;
+    }
+
+    .dashboard-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .dashboard-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sticky-profile {
+        position: sticky;
+        top: 2rem;
+    }
+
+    /* Sections */
+    .dashboard-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border);
+        opacity: 0;
+    }
+
+    .dashboard-section.visible {
+        animation: slideInFromLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--very-light-green);
+    }
+
+    .section-header i {
+        font-size: 1.5rem;
+        color: var(--primary);
+        width: 28px;
+        text-align: center;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        color: var(--text-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    /* Buttons */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        padding: 0.9rem 1.5rem;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(39, 167, 69, 0.2);
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(39, 167, 69, 0.3);
+    }
+
+    .btn-logout {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+        padding: 0.9rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        font-size: 0.95rem;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+        width: 100%;
+    }
+
+    .btn-logout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Profile Items */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .profile-item {
+        padding: 1.2rem;
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+    }
+
+    .profile-item:hover {
+        border-color: var(--light-green);
+        box-shadow: 0 2px 8px rgba(39, 167, 69, 0.06);
+    }
+
+    .profile-label {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.4rem;
+        font-size: 0.85rem;
+    }
+
+    .profile-label i {
+        color: var(--primary);
+        width: 18px;
+        text-align: center;
+    }
+
+    .profile-value {
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-left: 1.4rem;
+    }
+
+    /* Tables */
+    .table-container {
+        overflow-x: auto;
+        margin: 0;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .admin-table thead {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border-bottom: 2px solid var(--border);
+    }
+
+    .admin-table th {
+        padding: 1rem 1.2rem;
+        text-align: left;
+        color: var(--text-dark);
+        font-weight: 700;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+    .admin-table td {
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-dark);
+        font-size: 0.95rem;
+    }
+
+    .admin-table tbody tr {
+        transition: all 0.3s;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    /* Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.9rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge.status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge.status-inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .badge.status-pending {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .badge.status-accepted {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge.status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+
+    .empty-state-icon {
+        font-size: 3.5rem;
+        color: var(--light-green);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state-text {
+        color: var(--text-light);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    /* Animations */
+    @keyframes slideInFromLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .top-section,
+        .dashboard-main {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sticky-profile {
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .employer-dashboard {
+            padding: 1rem;
+        }
+
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-section {
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stat-content h3 {
+            font-size: 1.5rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.8rem 0.6rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="employer-dashboard">
+    <!-- Top Section with Header and Stats on Left -->
+    <div class="top-section">
+        <!-- Left: Header and Stats -->
+        <div class="top-left">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
                 <div>
-                    <span style="margin-right: 20px; font-size: 1.1rem;">Welcome, {{ employer.business_name }}!</span>
-                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                    <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+                    <span class="welcome-text">Welcome, <strong>{{ employer.business_name }}</strong>!</span>
                 </div>
             </div>
 
             <!-- Statistics Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">💼</div>
+                    <div class="stat-icon-box">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
                     <div class="stat-content">
                         <h3>{{ total_jobs }}</h3>
                         <p>Total Jobs Posted</p>
@@ -48,7 +505,9 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">✨</div>
+                    <div class="stat-icon-box">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
                     <div class="stat-content">
                         <h3>{{ active_jobs }}</h3>
                         <p>Active Jobs</p>
@@ -56,7 +515,9 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📋</div>
+                    <div class="stat-icon-box">
+                        <i class="fas fa-inbox"></i>
+                    </div>
                     <div class="stat-content">
                         <h3>{{ total_applications }}</h3>
                         <p>Applications Received</p>
@@ -64,7 +525,9 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
+                    <div class="stat-icon-box">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
                     <div class="stat-content">
                         <h3>{{ pending_count }}</h3>
                         <p>Pending</p>
@@ -72,49 +535,46 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Company Profile Section -->
-            <div style="background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
-                <h2 style="color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 2px solid var(--light-green); padding-bottom: 1rem;">Company Profile</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                    <div>
-                        <strong style="color: var(--primary-dark);">Company Name:</strong><br>
-                        {{ employer.business_name }}
-                    </div>
-                    <div>
-                        <strong style="color: var(--primary-dark);">Contact Person:</strong><br>
-                        {{ employer.user.get_full_name }}
-                    </div>
-                    <div>
-                        <strong style="color: var(--primary-dark);">Email:</strong><br>
-                        {{ employer.user.email }}
-                    </div>
-                    <div>
-                        <strong style="color: var(--primary-dark);">Phone:</strong><br>
-                        {{ employer.contact_number|default:"Not provided" }}
-                    </div>
-                    <div>
-                        <strong style="color: var(--primary-dark);">Business Type:</strong><br>
-                        {{ employer.business_type|default:"Not specified" }}
-                    </div>
-                    <div>
-                        <strong style="color: var(--primary-dark);">Location:</strong><br>
-                        {{ employer.barangay }}, {{ employer.municipality }}, {{ employer.province }}
-                    </div>
+        <!-- Right: Quick Access -->
+        <div class="top-right">
+            <div class="dashboard-section sticky-profile top-profile">
+                <div class="section-header">
+                    <i class="fas fa-zap"></i>
+                    <h2>Quick Access</h2>
                 </div>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-                    <strong style="color: var(--primary-dark);">Description:</strong><br>
-                    <p>{{ employer.business_description|default:"No description provided" }}</p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button class="btn-action" onclick="postNewJob()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-plus"></i> Post New Job
+                    </button>
+                    <button class="btn-action" onclick="manageJobs()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-briefcase"></i> Manage Jobs
+                    </button>
+                    <button class="btn-action" onclick="editProfile()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                    <button class="btn-action" onclick="viewProfile()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-user-circle"></i> View Profile
+                    </button>
                 </div>
-                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="editProfile()">Edit Profile</button>
             </div>
+        </div>
+    </div>
 
+    <!-- Main Content Grid -->
+    <div class="dashboard-main">
+        <!-- Left Column -->
+        <div class="dashboard-left">
             <!-- Recent Jobs Posted -->
-            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08); margin-bottom: 2rem;">
-                <h2 style="color: var(--primary-dark); padding: 1.5rem 2rem; margin: 0; border-bottom: 2px solid var(--light-green);">Recent Jobs Posted</h2>
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <i class="fas fa-list"></i>
+                    <h2>Recent Jobs Posted</h2>
+                </div>
                 
                 {% if recent_jobs %}
-                    <div class="table-container" style="box-shadow: none;">
+                    <div class="table-container">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -134,12 +594,16 @@
                                     <td>{{ job.created_at|date:"M d, Y" }}</td>
                                     <td>
                                         <span class="badge {% if job.is_active %}status-active{% else %}status-inactive{% endif %}">
-                                            {% if job.is_active %}Active{% else %}Closed{% endif %}
+                                            {% if job.is_active %}<i class="fas fa-check-circle"></i> Active{% else %}<i class="fas fa-times-circle"></i> Closed{% endif %}
                                         </span>
                                     </td>
-                                    <td style="text-align: center; font-weight: bold;">{{ job.application_count|default:0 }}</td>
+                                    <td style="text-align: center; font-weight: bold;">
+                                        <i class="fas fa-inbox" style="color: var(--primary); margin-right: 0.5rem;"></i>{{ job.application_count|default:0 }}
+                                    </td>
                                     <td>
-                                        <a href="#" class="btn-small btn-info" onclick="viewApplications({{ job.id }})">View</a>
+                                        <button class="btn-action" onclick="viewApplications({{ job.id }})">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -147,19 +611,27 @@
                         </table>
                     </div>
                 {% else %}
-                    <div style="padding: 2rem; text-align: center;">
-                        <p style="color: var(--text-light); font-size: 1.1rem;">You haven't posted any jobs yet.</p>
-                        <button class="btn btn-primary" style="margin-top: 1rem;" onclick="postNewJob()">Post Your First Job</button>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <div class="empty-state-text">You haven't posted any jobs yet.</div>
+                        <button class="btn-action" onclick="postNewJob()" style="margin-top: 1rem;">
+                            <i class="fas fa-plus"></i> Post Your First Job
+                        </button>
                     </div>
                 {% endif %}
             </div>
 
             <!-- Recent Applications -->
             {% if recent_applications %}
-            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(39, 167, 69, 0.08);">
-                <h2 style="color: var(--primary-dark); padding: 1.5rem 2rem; margin: 0; border-bottom: 2px solid var(--light-green);">Recent Applications</h2>
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <i class="fas fa-file-invoice"></i>
+                    <h2>Recent Applications</h2>
+                </div>
                 
-                <div class="table-container" style="box-shadow: none;">
+                <div class="table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -178,11 +650,13 @@
                                 <td>{{ application.applied_at|date:"M d, Y" }}</td>
                                 <td>
                                     <span class="badge status-{{ application.status|lower }}">
-                                        {{ application.get_status_display }}
+                                        {% if application.status == 'pending' %}<i class="fas fa-clock"></i> {% elif application.status == 'accepted' %}<i class="fas fa-check"></i> {% elif application.status == 'rejected' %}<i class="fas fa-times"></i> {% endif %}{{ application.get_status_display }}
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="#" class="btn-small btn-info" onclick="viewApplication({{ application.id }})">Review</a>
+                                    <button class="btn-action" onclick="viewApplication({{ application.id }})">
+                                        <i class="fas fa-eye"></i> Review
+                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -192,6 +666,8 @@
             </div>
             {% endif %}
         </div>
+
+
     </div>
 </div>
 
@@ -206,8 +682,12 @@
         alert('Profile editing feature coming soon!');
     }
 
+    function viewProfile() {
+        alert('View profile feature coming soon!');
+    }
+
     function postNewJob() {
-        alert('Job posting feature coming soon!');
+        window.location.href = '{% url 'post_job' %}';
     }
 
     function manageJobs() {
@@ -221,5 +701,97 @@
     function viewApplication(applicationId) {
         alert('Viewing application ' + applicationId);
     }
+
+    // Scroll animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const dashboardHeader = document.querySelector('.dashboard-header');
+        const statCards = document.querySelectorAll('.stat-card');
+        const dashboardSections = document.querySelectorAll('.dashboard-section:not(.top-profile)');
+        const profileCard = document.querySelector('.sticky-profile');
+        const topProfileCard = document.querySelector('.top-profile');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        // Observe dashboard header
+        if (dashboardHeader) {
+            const headerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        headerObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            headerObserver.observe(dashboardHeader);
+        }
+
+        // Observe stat cards with staggered animation
+        if (statCards.length > 0) {
+            const statObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 150);
+                        statObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            statCards.forEach(card => {
+                statObserver.observe(card);
+            });
+        }
+
+        // Observe dashboard sections
+        if (dashboardSections.length > 0) {
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 200);
+                        sectionObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            dashboardSections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        }
+
+        // Observe profile card  
+        if (profileCard) {
+            const profileObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        profileObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            profileObserver.observe(profileCard);
+        }
+
+        // Observe top profile card
+        if (topProfileCard) {
+            const topProfileObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        topProfileObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            topProfileObserver.observe(topProfileCard);
+        }
+    });
 </script>
 {% endblock %}
